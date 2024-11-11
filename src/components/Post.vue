@@ -27,11 +27,11 @@ onBeforeUnmount(() => {
 <template>
 
   <el-row>
-    <el-col :span="4"/>
-    <el-col :span="16">
+    <el-col :span="1"/>
+    <el-col :span="22">
       <view ref="el"/>
     </el-col>
-    <el-col :span="4"/>
+    <el-col :span="1"/>
   </el-row>
 </template>
 
