@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import {useRouter} from "vue-router";
-import { ElButton } from 'element-plus'
+import {ElButton} from 'element-plus'
 import 'element-plus/dist/index.css'
+
 const router = useRouter();
 
 const toPost = () => {
@@ -9,31 +10,11 @@ const toPost = () => {
 }
 </script>
 
-
-<!--<template>
-
-  <div class="common-layout">
-    <el-container>
-      <el-header>h.t.t.p.</el-header>
-      <el-main>
-        <h1 class="text-[12vw] font-bold tracking-tight leading-[0.85] mb-24">
-          <span class="block">Hidden</span>
-          <span class="block">Tensions</span>
-          <span class="block">Transparent</span>
-          <span class="block">Prejudice</span>
-        </h1>
-        <router-view/>
-        <el-button type="primary" round @click="toPost">Primary</el-button>
-      </el-main>
-      <el-footer>Footer</el-footer>
-    </el-container>
-  </div>
-</template>-->
 <template>
   <div class="min-h-screen bg-[#E5E5E5] text-black p-4 sm:p-8">
     <div class="max-w-[1400px] mx-auto">
       <!-- Main Title -->
-      <h1 class="text-[12vw] font-bold tracking-tight leading-[0.85] mb-24">
+      <h1 class="text-[12vw] font-bold tracking-tight leading-[0.7] mb-20">
         <span class="block">Hidden</span>
         <span class="block">Tensions</span>
         <span class="block">Transparent</span>
@@ -61,9 +42,10 @@ const toPost = () => {
 
           <div class="mt-12">
             <p class="text-sm">Workshop curator</p>
-            <p class="text-sm">The H.T.T.P Workshop is a safe space of expression for participants to explore how IP geolocation influences online interactions and shapes our digital prejudices.</p>
+            <p class="text-sm">The H.T.T.P Workshop is a safe space of expression for participants to explore how IP
+              geolocation influences online interactions and shapes our digital prejudices.</p>
           </div>
-          <router-view/>
+
           <el-button
               class="mt-8 rounded-full border border-black bg-transparent text-black hover:bg-black hover:text-white px-8 py-2"
               @click="toPost"

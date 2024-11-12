@@ -25,14 +25,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-
-  <el-row>
-    <el-col :span="1"/>
-    <el-col :span="22">
-      <view ref="el"/>
-    </el-col>
-    <el-col :span="1"/>
-  </el-row>
+  <view ref="el"/>
 </template>
 
 <style scoped>
