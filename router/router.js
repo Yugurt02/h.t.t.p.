@@ -1,9 +1,16 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 
-import Post from "@/components/Post.vue";
-
 const routes = [
-    {path: '/post', component: Post},
+    {
+        path: '/',
+        name: 'Info',
+        component: () => import('@/components/Info.vue')
+    },
+    {
+        path: '/post',
+        name: 'Post',
+        component: () => import('@/components/Post.vue')
+    },
 ]
 
 const router = createRouter({
