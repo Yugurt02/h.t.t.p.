@@ -11,10 +11,10 @@ const toPost = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#E5E5E5] text-black p-4 sm:p-8">
+  <div class="min-h-screen bg-[#D8D8D8] text-black p-4 sm:p-8">
     <div class="max-w-[1400px] mx-auto">
       <!-- Main Title -->
-      <h1 class="text-[12vw] font-bold tracking-tight leading-[0.7] mb-20">
+      <h1 class="text-[12vw] font-clash-display tracking-tight leading-[0.5] mb-20">
         <span class="block">Hidden</span>
         <span class="block">Tensions</span>
         <span class="block">Transparent</span>

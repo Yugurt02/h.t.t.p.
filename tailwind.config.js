@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+        fontFamily: {
+            'clash-display': ['ClashDisplay', 'sans-serif'],
+        },
   },
   plugins: [],
 }

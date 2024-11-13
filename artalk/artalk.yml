@@ -402,7 +402,7 @@ frontend:
   # Vote button
   vote: true
   # Dislike button
-  voteDown: false
+  voteDown: true
   # User UA badge
   uaBadge: false
   # Comment sorting

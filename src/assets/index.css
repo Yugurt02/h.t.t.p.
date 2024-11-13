@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('@/assets/fonts/ClashDisplay-Bold.otf')format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
