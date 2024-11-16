@@ -25,12 +25,23 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-screen  text-black p-4 sm:p-8">
+  <div class="min-h-screen bg-[#F1F1F1] text-black p-4 sm:p-8">
     <div class="max-w-[1400px] mx-auto">
-      <h1 class="text-[10vw] font-bold tracking-tight leading-[0.7] mb-20">
+      <h1 class="text-[10vw] font-clash-display tracking-tight leading-[0.7] mb-20">
         <span class="block">Part1: </span>
         <span class="block">Introduction </span>
       </h1>
+
+      <el-row>
+        <el-col :span="2">
+
+        </el-col>
+        <el-col :span="20">
+
+          <view ref="el"/>
+        </el-col>
+        <el-col :span="2"/>
+      </el-row>
     </div>
 
 
@@ -38,16 +49,9 @@ onBeforeUnmount(() => {
 
   </div>
 
-  <el-row>
-    <el-col :span="2">
 
-    </el-col>
-    <el-col :span="20">
 
-      <view ref="el"/>
-    </el-col>
-    <el-col :span="2"/>
-  </el-row>
+
 
 </template>
 
