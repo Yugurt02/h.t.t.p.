@@ -45,13 +45,13 @@ const toPost = () => {
         <div class="col-span-8 flex justify-end">
           <div class="space-y-0.5 ">
             <p class="text-sm font-black mb-2">核心议题 | Core Issues:</p>
-            <h2 class="text-5xl font-black">Identity and Labels</h2>
-            <h2 class="text-5xl font-black">Formation of Prejudices</h2>
-            <h2 class="text-5xl font-black">Evolution of Interaction</h2>
-            <h2 class="text-5xl font-black">Stereotypes in Cyberspace</h2>
+            <h2 class="text-4xl font-black">Identity and Labels</h2>
+            <h2 class="text-4xl font-black">Formation of Prejudices</h2>
+            <h2 class="text-4xl font-black">Evolution of Interaction</h2>
+            <h2 class="text-4xl font-black">Stereotypes in Cyberspace</h2>
               <div class="space-y-2">
                 <el-button
-                    class="mt-10 rounded-full border border-black bg-transparent text-black hover:bg-black hover:text-white px-8 py-6"
+                    class="mt-12 rounded-full border border-black bg-transparent text-black hover:bg-black hover:text-white px-8 py-6"
                     @click="toPost"
                 >
                   <p class="text-base font-black">ENTER WORKSHOP</p>
@@ -65,9 +65,9 @@ const toPost = () => {
 
       <!-- Bottom Section -->
       <div class="grid grid-cols-2 gap-4">
-        <h2 class="text-[8vw] font-clash-display">Part I</h2>
+        <h2 class="text-[8vw] font-bold">Part I</h2>
         <div class="flex justify-end">
-          <p class="text-[8vw] font-clash-display">—11.30.24</p>
+          <p class="text-[8vw] font-bold">11.30.24—</p>
         </div>
       </div>
 
