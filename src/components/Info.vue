@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import {useRouter} from "vue-router";
-import {ElButton} from 'element-plus'
-import 'element-plus/dist/index.css'
-
 const router = useRouter();
 
-const toPost = () => {
-  router.push("/post")
+const toLogin = () => {
+  router.push("/login")
 }
 </script>
 
@@ -14,7 +11,7 @@ const toPost = () => {
   <div class="min-h-screen bg-[#F1F1F1] text-black p-4 sm:p-8 flex flex-col">
     <div class="max-w-[2500px] m-auto w-full flex-1 flex flex-col">
       <!-- Main Title -->
-      <h1 class="text-[clamp(5rem,13vw,18rem)] font-bold tracking-tight leading-[0.49]">
+      <h1 class="text-[clamp(5rem,13vw,18rem)] font-black tracking-tighter leading-[0.49]">
         <span class="block">Hidden</span>
         <span class="block">Tensions</span>
         <span class="block">Transparent</span>
@@ -57,14 +54,14 @@ const toPost = () => {
         <div class="md:col-span-7 flex md:justify-end">
           <div class="space-y-2 ">
             <p class="text-lg font-black mb-2">核心议题 | Core Issues:</p>
-            <h2 class="text-3xl font-black">Identity and Labels</h2>
-            <h2 class="text-3xl font-black">Formation of Prejudices</h2>
-            <h2 class="text-3xl font-black">Evolution of Interaction</h2>
-            <h2 class="text-3xl font-black">Stereotypes in Cyberspace</h2>
+            <h2 class="text-2xl font-black">Identity and Labels</h2>
+            <h2 class="text-2xl font-black">Formation of Prejudices</h2>
+            <h2 class="text-2xl font-black">Evolution of Interaction</h2>
+            <h2 class="text-2xl font-black">Stereotypes in Cyberspace</h2>
             <div class="space-y-2">
               <el-button
-                  class="mt-12 rounded-full border-2 border-black bg-transparent text-black hover:bg-black hover:text-white px-8 py-6 w-full"
-                  @click="toPost"
+                  class="mt-8 rounded-full border-2 border-black bg-transparent text-black hover:bg-black hover:text-white px-8 py-6 w-full"
+                  @click="toLogin"
               >
                 <p class="text-lg font-black">ENTER WORKSHOP</p>
               </el-button>

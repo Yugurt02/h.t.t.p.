@@ -9,7 +9,17 @@ const routes = [
     {
         path: '/post',
         name: 'Post',
-        component: () => import('@/components/Post.vue')
+        component: () => import('@/components/Post1.vue')
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/components/Login.vue')
+    },
+    {
+        path: '/forum',
+        name: 'Forum',
+        component: () => import('@/components/Forum.vue')
     },
 ]
 
