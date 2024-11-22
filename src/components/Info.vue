@@ -11,7 +11,7 @@ const toLogin = () => {
   <div class="min-h-screen bg-[#F1F1F1] text-black p-4 sm:p-8 flex flex-col">
     <div class="max-w-[2500px] m-auto w-full flex-1 flex flex-col">
       <!-- Main Title -->
-      <h1 class="text-[clamp(5rem,13vw,18rem)] font-black tracking-tighter leading-[0.49]">
+      <h1 class="text-[clamp(5rem,13vw,18rem)] font-bold tracking-tighter leading-[0.49]">
         <span class="block">Hidden</span>
         <span class="block">Tensions</span>
         <span class="block">Transparent</span>

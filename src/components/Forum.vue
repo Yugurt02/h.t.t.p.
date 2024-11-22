@@ -1,14 +1,16 @@
-# ForumPage.vue
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const forums = ref([
   {
     id: 1,
-    title: 'Musicians',
-    description: 'A space for musicians to share their work, collaborate, and discuss music theory.',
+    title: 'Task1',
+    description: 'Complete self-introduction without revealing actual location',
     topics: 4,
     posts: 10,
+    route: '/forum/post1',
     lastPost: {
       author: 'Jon Greene',
       avatar: '/avatars/jon.jpg',
@@ -17,10 +19,11 @@ const forums = ref([
   },
   {
     id: 2,
-    title: 'Nature Lovers',
-    description: 'Exploring the wilderness, sharing hiking experiences, and organizing outdoor events.',
+    title: 'Task2',
+    description: 'Icebreaking',
     topics: 3,
     posts: 9,
+    route: '/forum/post2',
     lastPost: {
       author: 'Jill Smith',
       avatar: '/avatars/jill.jpg',
@@ -33,27 +36,34 @@ const forums = ref([
     description: 'Share your photos, discuss techniques, and get inspired by fellow photographers.',
     topics: 3,
     posts: 8,
+    route: '/forum/post3',
     lastPost: {
       author: 'Walter Lewis',
       avatar: '/avatars/walter.jpg',
       time: '1 month, 2 weeks ago'
     }
   }
-])
+]);
 
-const searchQuery = ref('')
+const navigateToForum = (route) => {
+  router.push(route);
+};
+
+const startNewDiscussion = () => {
+  router.push('/forum/new');
+};
 </script>
 
 <template>
-
   <div class="min-h-screen bg-[#F1F1F1] text-black p-4 sm:p-8">
     <!-- Hero Section -->
-      <div class="max-w-[2000px] mx-auto">
-        <h1 class="text-[15vw] font-black leading-[0.8] tracking-tighter mb-8">
-          Forum
-          <span class="block text-[8vw]">Discussion Space</span>
-        </h1>
-      </div>
+    <div class="max-w-[2000px] mx-auto">
+      <h1 class="text-[12vw] font-black leading-[0.8] tracking-tight mb-8">
+        Forum
+        <span class="block text-[6vw]">Discussion Space</span>
+      </h1>
+    </div>
+
     <!-- Forums List -->
     <div class="container mx-auto px-4 py-16">
       <!-- Headers -->
@@ -70,6 +80,7 @@ const searchQuery = ref('')
             v-for="forum in forums"
             :key="forum.id"
             class="group grid grid-cols-12 gap-4 p-8 bg-white hover:bg-black hover:text-white transition-all duration-300 cursor-pointer"
+            @click="navigateToForum(forum.route)"
         >
           <div class="col-span-6">
             <h3 class="text-4xl font-black mb-2">{{ forum.title }}</h3>
@@ -100,13 +111,7 @@ const searchQuery = ref('')
     </div>
 
     <!-- Bottom Action -->
-    <div class="container mx-auto px-4 pb-16">
-      <el-button
-          class="w-full !h-24 text-black !text-2xl !font-black !rounded-full !border-2 !border-black hover:!bg-black hover:!text-white"
-      >
-        Start New Discussion
-      </el-button>
-    </div>
+
   </div>
 </template>
 
