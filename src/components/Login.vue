@@ -1,6 +1,8 @@
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import {onMounted, reactive, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import api from './interface.js'
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
 const activeStep = ref(1)
@@ -9,43 +11,90 @@ const totalSteps = 3
 const form = reactive({
   name: '',
   email: '',
-  age: '',
+  age: null,
   hometown: '',
-  current_residence: '',
-  occupation: '',
+  currentResidence: {},
   education: '',
   frequency: '',
-  ip_attitude: '',
-  ip_argument: '',
+  ipAttitude: '',
+  ipArgument: '',
   platforms: [],
-  online_time: '',
+  onlineTime: '',
   topics: []
 })
 
-const educationOptions = ['研究生', '本科', '大专', '高中', '其他']
-const frequencyOptions = ['每周几次', '每月几次', '很少发言', '只看不说']
-const ipAttitudeOptions = ['非常支持', '比较支持', '无所谓', '不太支持', '非常反对']
-const ipArgumentOptions = ['是，多次', '是，偶尔', '否，从未有过', '不确定']
-const platformOptions = ['微博', '知乎', '抖音', '小红书', '豆瓣', '微信朋友圈', 'B站', '其他']
-const onlineTimeOptions = ['1-3小时', '4-6小时', '7-9小时', '10小时以上']
-const topicOptions = ['社会热点', '文化娱乐', '教育', '时政', '科技', '生活方式', '其他']
+const hometownOptions = ref([])
+const currentResidenceOptions = ref([])
+const educationOptions = ref([])
+const frequencyOptions = ref([])
+const ipAttitudeOptions = ref([])
+const ipArgumentOptions = ref([])
+const platformOptions = ref([])
+const onlineTimeOptions = ref([])
+const topicOptions = ref([])
+
+const getDict = async (code) => {
+  const res = await api.getDict(code);
+  let options = [];
+  res.data.forEach(item => {
+    options.push({
+      label: item.value,
+      value: item.code
+    });
+  });
+  return options;
+}
+
+const setCurrentResidence = async () => {
+  const res = await api.getRandomCurrentLocation();
+  form.currentResidence = res.data.value;
+  currentResidenceOptions.value = [
+    {
+      label: res.data.value,
+      value: res.data.code
+    }
+  ]
+}
+
+const initOptions = async () => {
+  hometownOptions.value = await getDict('user.hometown');
+  educationOptions.value = await getDict('user.education');
+  frequencyOptions.value = await getDict('user.frequency');
+  ipAttitudeOptions.value = await getDict('user.ipAttitude');
+  ipArgumentOptions.value = await getDict('user.ipArgument');
+  platformOptions.value = await getDict('user.platform');
+  onlineTimeOptions.value = await getDict('user.onlineTime');
+  topicOptions.value = await getDict('user.topic');
+}
 
 const nextStep = () => {
   if (activeStep.value < totalSteps) {
-    activeStep.value++
+    activeStep.value++;
   }
 }
 
 const prevStep = () => {
   if (activeStep.value > 1) {
-    activeStep.value--
+    activeStep.value--;
   }
 }
 
-const onSubmit = () => {
-  console.log('表单数据:', form)
-  router.push('/forum')
+const onSubmit = async () => {
+  form.currentResidence = currentResidenceOptions.value[0].value;
+  const res = await api.register(form);
+  if (res.code === 200) {
+    ElMessage({
+      message: res.msg,
+      type: 'success',
+    });
+  }
+  await router.push('/forum');
 }
+
+onMounted(() => {
+  initOptions();
+  setCurrentResidence();
+})
 </script>
 
 <template>
@@ -115,6 +164,7 @@ const onSubmit = () => {
                   <label class="block text-sm font-medium text-gray-700 mb-1">年龄 | Age</label>
                   <el-input
                       v-model="form.age"
+                      type="number"
                       class="custom-input !w-full"
                       placeholder="Your age"
                   />
@@ -122,20 +172,34 @@ const onSubmit = () => {
 
                 <div class="w-full">
                   <label class="block text-sm font-medium text-gray-700 mb-1">籍贯 | Hometown</label>
-                  <el-input
+                  <el-select
                       v-model="form.hometown"
                       class="custom-input !w-full"
-                      placeholder="Your hometown"
-                  />
+                      placeholder="Select hometown"
+                  >
+                    <el-option
+                        v-for="option in hometownOptions"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
+                    />
+                  </el-select>
                 </div>
 
                 <div class="w-full">
                   <label class="block text-sm font-medium text-gray-700 mb-1">现居地 | Current Location</label>
-                  <el-input
-                      v-model="form.current_residence"
+                  <el-select
+                      v-model="form.currentResidence"
                       class="custom-input !w-full"
-                      disabled
-                  />
+                      placeholder="Select hometown"
+                  >
+                    <el-option
+                        v-for="option in currentResidenceOptions"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
+                    />
+                  </el-select>
                 </div>
 
                 <div class="w-full">
@@ -147,9 +211,9 @@ const onSubmit = () => {
                   >
                     <el-option
                         v-for="option in educationOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -168,15 +232,15 @@ const onSubmit = () => {
                 <div class="w-full">
                   <label class="block text-sm font-medium text-gray-700 mb-1">上网时间 | Online Time</label>
                   <el-select
-                      v-model="form.online_time"
+                      v-model="form.onlineTime"
                       class="custom-input !w-full"
                       placeholder="选择上网时长"
                   >
                     <el-option
                         v-for="option in onlineTimeOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -190,9 +254,9 @@ const onSubmit = () => {
                   >
                     <el-option
                         v-for="option in frequencyOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -200,15 +264,15 @@ const onSubmit = () => {
                 <div class="w-full">
                   <label class="block text-sm font-medium text-gray-700 mb-1">IP属地态度 | IP Location View</label>
                   <el-select
-                      v-model="form.ip_attitude"
+                      v-model="form.ipAttitude"
                       class="custom-input !w-full"
                       placeholder="选择您的态度"
                   >
                     <el-option
                         v-for="option in ipAttitudeOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -216,15 +280,15 @@ const onSubmit = () => {
                 <div class="w-full">
                   <label class="block text-sm font-medium text-gray-700 mb-1">IP争议经历 | IP Argument</label>
                   <el-select
-                      v-model="form.ip_argument"
+                      v-model="form.ipArgument"
                       class="custom-input !w-full"
                       placeholder="选择您的经历"
                   >
                     <el-option
                         v-for="option in ipArgumentOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -252,9 +316,9 @@ const onSubmit = () => {
                   >
                     <el-option
                         v-for="option in platformOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
@@ -271,9 +335,9 @@ const onSubmit = () => {
                   >
                     <el-option
                         v-for="option in topicOptions"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
                     />
                   </el-select>
                 </div>
