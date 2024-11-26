@@ -6,8 +6,8 @@ const router = useRouter();
 const forums = ref([
   {
     id: 1,
-    title: 'Task1',
-    description: 'Complete self-introduction without revealing actual location',
+    title: 'Part1',
+    description: 'Identity and Labels',
     topics: 4,
     posts: 10,
     route: '/forum/post1',
@@ -19,8 +19,8 @@ const forums = ref([
   },
   {
     id: 2,
-    title: 'Task2',
-    description: 'Icebreaking',
+    title: 'Part2',
+    description: 'Formation of Prejudices',
     topics: 3,
     posts: 9,
     route: '/forum/post2',
@@ -32,8 +32,8 @@ const forums = ref([
   },
   {
     id: 3,
-    title: 'Photography',
-    description: 'Share your photos, discuss techniques, and get inspired by fellow photographers.',
+    title: 'Part3',
+    description: 'Evolution of Interaction',
     topics: 3,
     posts: 8,
     route: '/forum/post3',
