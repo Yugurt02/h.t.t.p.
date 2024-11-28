@@ -1,5 +1,7 @@
-<script setup>
-import {ref, computed} from 'vue'
+<script setup lang="ts">
+import {ref, computed, onBeforeUnmount, nextTick} from 'vue'
+import Artalk from 'artalk'
+import 'artalk/dist/Artalk.css'
 
 const activeProject = ref(null)
 const emit = defineEmits(['project-active'])
@@ -8,17 +10,28 @@ const visibleProjects = computed(() => {
   return projects
 })
 
-const toggleProject = (project) => {
+const toggleProject = async (project) => {
   if (activeProject.value?.id === project.id) {
+    if (artalkInstances.value[project.id]) {
+      artalkInstances.value[project.id].destroy()
+      delete artalkInstances.value[project.id]
+    }
     activeProject.value = null
     emit('project-active', false)
   } else {
     activeProject.value = project
     emit('project-active', true)
+    await handleArtalkInstance(project.id, project.title)
   }
 }
 
 const closeProject = () => {
+  if (activeProject.value) {
+    Object.values(artalkInstances.value).forEach(instance => {
+      instance.destroy()
+    })
+    artalkInstances.value = {}
+  }
   activeProject.value = null
   emit('project-active', false)
 }
@@ -31,6 +44,8 @@ const types = [
   'Mobile App'
 ]
 
+const year = '2023-2024'
+
 const disciplines = [
   'UI Design',
   'UX Research',
@@ -40,68 +55,68 @@ const disciplines = [
 
 const projects = [
   {
-    id: '1',
-    color: '#0000FF',
-    title: 'SkillsUnion — Edtech Platform',
-    detailTitle: "Revolutionising 'learning' by delivering practical knowledge for changemakers & helping them reach their full potential.",
-    description: "SkillsUnion is a digital learning platform working with leading universities and renowned employers to design & deliver digital skill training programmes that help our students succeed in today's fast-evolving global tech industry.",
-    tags: ['MARKETING', 'GROWTH', 'BRAND', 'WEBSITE']
+    id: '01',
+    color: '#E57373',
+    title: '个人经历与地域印象',
+    detailTitle: '探讨个人经历如何塑造地域印象',
+    description: '每个人都有独特的生活经历，这些经历如何影响我们对不同地域的理解和认知？让我们一起探讨个人视角下的地域印象。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '2',
-    color: '#FF0000',
-    title: 'Value Tech Foundation — Blockchain R&D',
-    detailTitle: 'Building the future of blockchain technology',
-    description: 'A research and development initiative focused on advancing blockchain technology and its applications.',
-    tags: ['BRAND', 'WEBSITE', 'EDITORIAL']
+    id: '02',
+    color: '#DCE775',
+    title: '集体认知与刻板印象',
+    detailTitle: '解析群体认知中的刻板印象形成',
+    description: '探讨社会群体中普遍存在的刻板印象是如何形成和传播的，以及这些印象对社会交往的影响。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '3',
-    color: '#D3C1B3',
-    title: "Mausumi — Writings' Showcase",
-    detailTitle: 'A platform for creative expression',
-    description: 'Showcasing thought-provoking writings and creative content from diverse voices.',
-    tags: ['EDITORIAL', 'BRAND', 'WEBSITE']
+    id: '03',
+    color: '#D7CCC8',
+    title: '高考改革引发争议：综合素质评价将纳入录取标准',
+    detailTitle: '教育改革中的地域公平问题',
+    description: '探讨教育改革背景下的地域差异问题，以及如何确保教育资源的公平分配。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '4',
-    color: '#FFFF00',
-    title: 'Nowiverse — VR Game by Awry Studios',
-    detailTitle: 'Immersive virtual reality gaming experience',
-    description: 'A groundbreaking VR game that pushes the boundaries of interactive entertainment.',
-    tags: ['VISUAL', 'WEBSITE', 'BRAND']
+    id: '04',
+    color: '#4DD0E1',
+    title: '部分省会医院取消号贩子通道，专家号一号难求现象仍存',
+    detailTitle: '医疗资源分配与地域差异',
+    description: '讨论医疗资源分配不均衡的问题，以及如何改善基层医疗条件。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '5',
-    color: '#FFA500',
-    title: 'Vocal — Influencer Marketing Agency',
-    detailTitle: 'Connecting brands with authentic voices',
-    description: 'Strategic influencer marketing solutions for modern brands.',
-    tags: ['WEBSITE', 'BRAND']
+    id: '05',
+    color: '#FFF176',
+    title: '应届生就业选择：超80%青睐一线城市',
+    detailTitle: '就业选择与城市发展',
+    description: '探讨新生代求职者的就业倾向，以及不同城市的发展机遇。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '6',
-    color: '#006400',
-    title: 'GreenFox — HVAC Brand',
-    detailTitle: 'Sustainable climate control solutions',
-    description: 'Innovative HVAC systems with a focus on environmental responsibility.',
-    tags: ['VISUAL', 'BRAND', 'WEBSITE']
+    id: '06',
+    color: '#4DB6AC',
+    title: '一线城市收紧人才落户政策，多地"抢人大战"升级',
+    detailTitle: '人才政策与区域发展',
+    description: '分析各地人才政策的变化，探讨区域发展与人才流动的关系。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '7',
-    color: '#000000',
-    title: 'AllBodies — Sex Ed. Platform',
-    detailTitle: 'Inclusive sexual education for everyone',
-    description: 'A comprehensive platform providing accessible and inclusive sexual education resources.',
-    tags: ['COMPONENTS', 'BRAND', 'WEBSITE']
+    id: '07',
+    color: '#64B5F6',
+    title: '"文化符号商业化"引争议：多地特色街区相似度高',
+    detailTitle: '文化特色与商业开发',
+    description: '探讨文化符号商业化过程中的同质化现象，以及如何保持地方特色。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   },
   {
-    id: '8',
-    color: '#FFA07A',
-    title: 'Buzzoms — Bra free Clothing',
-    detailTitle: 'Redefining comfort in fashion',
-    description: 'Revolutionary clothing line promoting comfort and body positivity.',
-    tags: ['ART_DIRECTION', 'BRAND', 'WEBSITE', 'ECOMMERCE']
+    id: '08',
+    color: '#64B5F6',
+    title: '网红城市市容之变：特色没了，"现代化"来了',
+    detailTitle: '城市发展与文化保护',
+    description: '讨论城市现代化进程中的文化传承问题，探索平衡发展与保护的方案。',
+    tags: ['#PREJUDICE', '#IDENTITY']
   }
 ]
 
@@ -128,46 +143,95 @@ const getAdjacentProject = (direction) => {
 }
 
 // 添加切换到相邻项目的方法
-const navigateProject = (direction) => {
+const navigateProject = async (direction) => {
   const nextProject = getAdjacentProject(direction)
   if (nextProject) {
     activeProject.value = nextProject
     emit('project-active', true)
+    await handleArtalkInstance(nextProject.id, nextProject.title)
   }
 }
+
+// 修改 Artalk 实例管理部分
+const artalkInstances = ref<{ [key: string]: Artalk }>({})
+
+// 添加一个专门的方法来处理 Artalk 实例
+const handleArtalkInstance = async (projectId: string, title: string) => {
+  // 先销毁所有现有实例
+  Object.values(artalkInstances.value).forEach(instance => {
+    instance.destroy()
+  })
+  artalkInstances.value = {}
+
+  // 等待 DOM 更新
+  await nextTick()
+  
+  // 获取新的评论容器元素
+  const commentEl = document.getElementById(`comments-${projectId}`)
+  if (!commentEl) return
+
+  // 创建新实例
+  artalkInstances.value[projectId] = new Artalk({
+    el: commentEl,
+    pageKey: `project-${projectId}`,
+    pageTitle: title,
+    server: 'http://localhost:23366',
+    site: 'h.t.t.p.',
+    placeholder: '分享你的想法...',
+    // 添加更多配置以确保评论正确加载
+    requestTimeout: 15000,
+    darkMode: true,
+    useBackendConf: true,
+    // 添加错误处理
+    onError: (err) => {
+      console.error('Artalk error:', err)
+    }
+  })
+}
+
+// 确保组件卸载时清理所有实例
+onBeforeUnmount(() => {
+  Object.values(artalkInstances.value).forEach(instance => {
+    instance.destroy()
+  })
+  artalkInstances.value = {}
+})
 </script>
 
 <template>
   <div class="min-h-screen" :class="{'bg-gray-900': activeProject}">
-    <div class="max-w-[1920px] mx-auto px-0 py-6 h-screen flex flex-col">
-      <!-- 头部信息，固定在顶部 -->
+    <div class="max-w-[1920*2px] mx-auto px-0 py-6 h-screen flex flex-col">
+      <!-- 头部信息 -->
       <div :class="{'text-white': activeProject}" class="flex-none">
-        <h1 class="text-6xl font-normal mb-12 px-5">Project(s)</h1>
+        <h1 class="text-[10vw] font-black leading-[0.8] tracking-tight mb-4 px-4">
+          Forum
+          <span class="block text-[4vw]">Discussion Space</span>
+        </h1>
 
         <div class="grid grid-cols-8 gap-4 mt-16 mb-12 px-5">
-          <!-- 过滤器部分 -->
+          <!-- 类型部分 -->
           <div>
-            <h3 class="text-xs mb-2">TYPE</h3>
+            <h3 class="text-xs uppercase mb-2">TYPE</h3>
             <ul class="space-y-1">
-              <li v-for="type in types" :key="type" class="text-xs">{{ type }}</li>
+              <li v-for="type in types" :key="type" class="text-sm">{{ type }}</li>
             </ul>
           </div>
 
+          <!-- 年份部分 -->
           <div>
-            <h3 class="text-xs mb-2">YEAR</h3>
-            <p class="text-xs">2019 - 2022</p>
+            <h3 class="text-xs uppercase mb-2">YEAR</h3>
+            <p class="text-sm">{{ year }}</p>
           </div>
 
+          <!-- 学科部分 -->
           <div>
-            <h3 class="text-xs mb-2">DISCIPLINE</h3>
+            <h3 class="text-xs uppercase mb-2">TYPE</h3>
             <ul class="space-y-1">
-              <li v-for="discipline in disciplines" :key="discipline" class="text-xs">
+              <li v-for="discipline in disciplines" :key="discipline" class="text-sm">
                 {{ discipline }}
               </li>
             </ul>
           </div>
-
-
         </div>
       </div>
 
@@ -230,9 +294,9 @@ const navigateProject = (direction) => {
             leave-to-class="opacity-0 translate-y-full"
         >
           <div v-if="activeProject"
-               class="fixed top-0 right-0 w-3/5 h-full bg-blue-600 text-white p-8 border-2 border-black rounded-xl flex flex-col">
+               class="fixed top-0 right-0 w-3/5 h-full bg-blue-600 text-white p-8 border-2 border-black rounded-xl flex flex-col overflow-y-auto">
             <!-- 主要内容 -->
-            <div class="flex justify-between items-start flex-1">
+            <div class="flex justify-between items-start">
               <div class="flex-1">
                 <div class="text-sm mb-4">SKILLSUNION</div>
                 <h3 class="text-4xl mb-4">{{ activeProject.detailTitle }}</h3>
@@ -247,6 +311,16 @@ const navigateProject = (direction) => {
                       class="text-white/70 hover:text-white transition-colors">
                 × CLOSE
               </button>
+            </div>
+
+            <!-- 评论区域 -->
+            <div class="mt-8 bg-white/10 p-6 rounded-lg flex-1 overflow-y-auto">
+              <h4 class="text-xl mb-4">项目讨论</h4>
+              <div 
+                :id="`comments-${activeProject.id}`" 
+                class="artalk-comments"
+                :key="`comments-${activeProject.id}`"
+              ></div>
             </div>
 
             <!-- 添加导航按钮 -->
@@ -375,5 +449,95 @@ const navigateProject = (direction) => {
 .slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
+}
+
+/* Add Artalk custom styles */
+.artalk-editor-textarea {
+  @apply bg-white/10 border-2 border-white/20 rounded-lg transition-all duration-300
+  min-h-[150px] text-base p-4 text-white;
+}
+
+.artalk-editor-textarea:focus {
+  @apply border-white/40;
+}
+
+.artalk-send-btn {
+  @apply bg-white/20 text-white rounded-full px-8 py-2 font-bold transition-all duration-300;
+}
+
+.artalk-send-btn:hover {
+  @apply bg-white/30;
+}
+
+.artalk-comment-wrap {
+  @apply py-6 border-b border-white/10;
+}
+
+.artalk-comment-avatar {
+  @apply border-2 border-white/20 rounded-full;
+}
+
+.artalk-comment-nick {
+  @apply font-bold text-white;
+}
+
+.artalk-comment-content {
+  @apply text-white/90;
+}
+
+/* Hide unnecessary elements */
+.artalk-layer-dialog-wrap,
+.artalk-editor-plug-wrap {
+  display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .artalk-send-btn {
+    @apply w-full mt-4;
+  }
+}
+
+/* 调整 Artalk 容器样式 */
+.artalk-comments {
+  @apply h-full overflow-y-auto relative;
+  min-height: 300px; /* 确保容器有足够的高度 */
+}
+
+/* 添加加载状态样式 */
+.artalk-comments::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.artalk-comments.loading::before {
+  opacity: 1;
+}
+
+/* 确保评论内容在暗色主题下可读 */
+:deep(.artalk-comment-content) {
+  @apply text-white/90;
+}
+
+:deep(.artalk-editor-textarea) {
+  @apply bg-white/10 border-2 border-white/20 rounded-lg transition-all duration-300
+  min-h-[150px] text-base p-4 text-white;
+}
+
+/* 添加新的样式 */
+.text-[10vw] {
+  font-size: 10vw;
+}
+
+.text-[5vw] {
+  font-size: 5vw;
 }
 </style>
