@@ -31,6 +31,11 @@ const routes = [
         name: 'Post3',
         component: () => import('@/components/Post3.vue')
     },
+    {
+        path: '/list',
+        name: 'List',
+        component: () => import('@/components/TopicList.vue')
+    },
 
 ]
 
