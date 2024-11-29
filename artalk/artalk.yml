@@ -404,7 +404,7 @@ frontend:
   # Dislike button
   voteDown: true
   # User UA badge
-  uaBadge: true
+  uaBadge: false
   # Comment sorting
   listSort: true
   # Editor real-time preview

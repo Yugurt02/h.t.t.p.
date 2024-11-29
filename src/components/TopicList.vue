@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, computed, onBeforeUnmount, nextTick} from 'vue'
 import Artalk from 'artalk'
-import 'artalk/dist/Artalk.css'
+import '../assets/artalk.css'
 
 const activeProject = ref(null)
 const emit = defineEmits(['project-active'])
@@ -11,10 +11,10 @@ const visibleProjects = computed(() => {
 })
 
 const toggleProject = async (project) => {
-  if (activeProject.value?.id === project.id) {
-    if (artalkInstances.value[project.id]) {
-      artalkInstances.value[project.id].destroy()
-      delete artalkInstances.value[project.id]
+  if (activeProject.value) {
+    if (artalkInstances.value[activeProject.value.id]) {
+      artalkInstances.value[activeProject.value.id].destroy()
+      delete artalkInstances.value[activeProject.value.id]
     }
     activeProject.value = null
     emit('project-active', false)
@@ -60,7 +60,7 @@ const projects = [
     title: '个人经历与地域印象',
     detailTitle: '探讨个人经历如何塑造地域印象',
     description: '每个人都有独特的生活经历，这些经历如何影响我们对不同地域的理解和认知？让我们一起探讨个人视角下的地域印象。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '02',
@@ -68,7 +68,7 @@ const projects = [
     title: '集体认知与刻板印象',
     detailTitle: '解析群体认知中的刻板印象形成',
     description: '探讨社会群体中普遍存在的刻板印象是如何形成和传播的，以及这些印象对社会交往的影响。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '03',
@@ -76,7 +76,7 @@ const projects = [
     title: '高考改革引发争议：综合素质评价将纳入录取标准',
     detailTitle: '教育改革中的地域公平问题',
     description: '探讨教育改革背景下的地域差异问题，以及如何确保教育资源的公平分配。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '04',
@@ -84,7 +84,7 @@ const projects = [
     title: '部分省会医院取消号贩子通道，专家号一号难求现象仍存',
     detailTitle: '医疗资源分配与地域差异',
     description: '讨论医疗资源分配不均衡的问题，以及如何改善基层医疗条件。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '05',
@@ -92,7 +92,7 @@ const projects = [
     title: '应届生就业选择：超80%青睐一线城市',
     detailTitle: '就业选择与城市发展',
     description: '探讨新生代求职者的就业倾向，以及不同城市的发展机遇。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '06',
@@ -100,7 +100,7 @@ const projects = [
     title: '一线城市收紧人才落户政策，多地"抢人大战"升级',
     detailTitle: '人才政策与区域发展',
     description: '分析各地人才政策的变化，探讨区域发展与人才流动的关系。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '07',
@@ -108,7 +108,7 @@ const projects = [
     title: '"文化符号商业化"引争议：多地特色街区相似度高',
     detailTitle: '文化特色与商业开发',
     description: '探讨文化符号商业化过程中的同质化现象，以及如何保持地方特色。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   },
   {
     id: '08',
@@ -116,17 +116,24 @@ const projects = [
     title: '网红城市市容之变：特色没了，"现代化"来了',
     detailTitle: '城市发展与文化保护',
     description: '讨论城市现代化进程中的文化传承问题，探索平衡发展与保护的方案。',
-    tags: ['#PREJUDICE', '#IDENTITY']
+    tags: ['PREJUDICE', 'IDENTITY']
   }
 ]
 
 const getProjectStyles = (project) => {
-  if (!activeProject.value) return {}
+  if (!activeProject.value) return {
+    transition: 'all 0.3s ease',
+    cursor: 'pointer'
+  }
 
+  const isActive = activeProject.value?.id === project.id
   return {
-    opacity: activeProject.value?.id === project.id ? '1' : '0.05',
-    filter: activeProject.value?.id === project.id ? 'blur(0)' : 'blur(2px)',
-    transition: 'all 0.3s ease'
+    opacity: isActive ? '1' : '0.05',
+    filter: isActive ? 'blur(0)' : 'blur(2px)',
+    transition: 'all 0.3s ease',
+    cursor: isActive ? 'pointer' : 'default',
+    pointerEvents: isActive ? 'auto' : 'none',
+    transform: 'none'
   }
 }
 
@@ -157,7 +164,7 @@ const artalkInstances = ref<{ [key: string]: Artalk }>({})
 
 // 添加一个专门的方法来处理 Artalk 实例
 const handleArtalkInstance = async (projectId: string, title: string) => {
-  // 先销毁所有现有实例
+  // 先毁所有现有实例
   Object.values(artalkInstances.value).forEach(instance => {
     instance.destroy()
   })
@@ -180,7 +187,6 @@ const handleArtalkInstance = async (projectId: string, title: string) => {
     placeholder: '分享你的想法...',
     // 添加更多配置以确保评论正确加载
     requestTimeout: 15000,
-    darkMode: true,
     useBackendConf: true,
     // 添加错误处理
     onError: (err) => {
@@ -199,19 +205,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-screen" :class="{'bg-gray-900': activeProject}">
-    <div class="max-w-[1920*2px] mx-auto px-0 py-6 h-screen flex flex-col">
+  <div class="bg-[#F1F1F1] min-h-screen" :class="{'bg-[#222]': activeProject}">
+    <div class="flex flex-col mx-auto px-0 py-4 max-w-[1920*2px] h-screen">
       <!-- 头部信息 -->
-      <div :class="{'text-white': activeProject}" class="flex-none">
-        <h1 class="text-[10vw] font-black leading-[0.8] tracking-tight mb-4 px-4">
+      <div :class="{'text-[#E2E2E2]': activeProject}" class="flex-none">
+        <h1 class="mb-4 px-4 font-black text-[10vw] leading-[0.8] tracking-tight">
           Forum
           <span class="block text-[4vw]">Discussion Space</span>
         </h1>
 
-        <div class="grid grid-cols-8 gap-4 mt-16 mb-12 px-5">
+        <div class="gap-4 grid grid-cols-8 mt-16 mb-12 px-5">
           <!-- 类型部分 -->
           <div>
-            <h3 class="text-xs uppercase mb-2">TYPE</h3>
+            <h3 class="mb-2 text-xs uppercase">TYPE</h3>
             <ul class="space-y-1">
               <li v-for="type in types" :key="type" class="text-sm">{{ type }}</li>
             </ul>
@@ -219,13 +225,13 @@ onBeforeUnmount(() => {
 
           <!-- 年份部分 -->
           <div>
-            <h3 class="text-xs uppercase mb-2">YEAR</h3>
+            <h3 class="mb-2 text-xs uppercase">YEAR</h3>
             <p class="text-sm">{{ year }}</p>
           </div>
 
           <!-- 学科部分 -->
           <div>
-            <h3 class="text-xs uppercase mb-2">TYPE</h3>
+            <h3 class="mb-2 text-xs uppercase">TYPE</h3>
             <ul class="space-y-1">
               <li v-for="discipline in disciplines" :key="discipline" class="text-sm">
                 {{ discipline }}
@@ -236,12 +242,12 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- 主内容区域 - 设置为可滚动区域 -->
-      <div class="flex flex-1 overflow-hidden mt-24">
-        <!-- 项目列表 - 添加滚动容器 -->
-        <div class="w-[100%] flex flex-col">
+      <div class="flex flex-1 mt-24 overflow-hidden">
+        <!-- 项目列 - 加滚动容器 -->
+        <div class="flex flex-col w-[100%]">
           <div class="border-container" :class="{'border-blur': activeProject}">
             <!-- 滚动区域容器 -->
-            <div class="overflow-y-auto custom-scrollbar">
+            <div class="custom-scrollbar overflow-y-auto">
               <TransitionGroup
                   enter-active-class="transition-all duration-500 ease-out"
                   leave-active-class="transition-all duration-300 ease-in"
@@ -251,24 +257,25 @@ onBeforeUnmount(() => {
                 <div v-for="project in visibleProjects"
                      :key="project.id"
                      class="relative"
-                     @click="toggleProject(project)">
+                     @click="toggleProject(project)"
+                     :class="{'hover:translate-x-0': activeProject && activeProject.id !== project.id}">
                   <!-- 调整项目行的样式 -->
                   <div
-                      class="flex items-center h-16 border-b border-gray-200 cursor-pointer transition-all duration-300 px-6"
+                      class="flex items-center border-gray-200 px-6 border-b h-16 transition-all duration-300"
                       :class="{
-                         'bg-white text-black border-gray-200': activeProject?.id === project.id,
-                         'text-white border-gray-700': activeProject && activeProject.id !== project.id
+                         'bg-[#F1F1F1] text-black border-gray-200': activeProject?.id === project.id,
+                         'text-white border-gray-700': activeProject && activeProject.id !== project.id,
                        }"
                       :style="getProjectStyles(project)">
                     <span class="w-16 text-base">{{ project.id.padStart(2, '0') }}</span>
-                    <div class="w-4 h-4 mr-8" :style="{ backgroundColor: project.color }"></div>
-                    <h2 class="flex-1 text-xl whitespace-nowrap overflow-hidden text-ellipsis pr-8">{{
+                    <div class="mr-8 w-4 h-4" :style="{ backgroundColor: project.color }"></div>
+                    <h2 class="flex-1 pr-8 text-ellipsis text-xl whitespace-nowrap overflow-hidden">{{
                         project.title
                       }}</h2>
                     <div class="flex gap-4 ml-auto">
                       <span v-for="tag in project.tags"
                             :key="tag"
-                            class="px-3 py-1 text-xs rounded-full whitespace-nowrap"
+                            class="px-3 py-1 rounded-full text-xs whitespace-nowrap"
                             :class="{
                               'bg-gray-100 text-black': activeProject?.id === project.id,
                               'bg-gray-800 text-white': activeProject && activeProject.id !== project.id
@@ -294,28 +301,23 @@ onBeforeUnmount(() => {
             leave-to-class="opacity-0 translate-y-full"
         >
           <div v-if="activeProject"
-               class="fixed top-0 right-0 w-3/5 h-full bg-blue-600 text-white p-8 border-2 border-black rounded-xl flex flex-col overflow-y-auto">
+               class="top-0 right-0 fixed flex flex-col border-2 bg-[#DED3C1] p-8 border-black rounded-xl w-3/5 h-full text-black overflow-y-auto scrollbar-none">
             <!-- 主要内容 -->
             <div class="flex justify-between items-start">
               <div class="flex-1">
-                <div class="text-sm mb-4">SKILLSUNION</div>
-                <h3 class="text-4xl mb-4">{{ activeProject.detailTitle }}</h3>
-                <p class="text-lg mb-6 max-w-3xl">{{ activeProject.description }}</p>
-                <div class="flex gap-4">
-                  <button class="bg-white/20 px-6 py-3 rounded-full text-sm hover:bg-white/30 transition-colors">
-                    ↓ Download Report
-                  </button>
-                </div>
+                <div class="mb-4 text-sm">SKILLSUNION</div>
+                <h3 class="mb-4 text-4xl">{{ activeProject.detailTitle }}</h3>
+                <p class="mb-6 max-w-3xl text-lg">{{ activeProject.description }}</p>
               </div>
               <button @click.stop="closeProject"
-                      class="text-white/70 hover:text-white transition-colors">
+                      class="text-black/70 hover:text-black transition-colors">
                 × CLOSE
               </button>
             </div>
 
             <!-- 评论区域 -->
-            <div class="mt-8 bg-white/10 p-6 rounded-lg flex-1 overflow-y-auto">
-              <h4 class="text-xl mb-4">项目讨论</h4>
+            <div class="flex-1 bg-[#B1A696] mt-8 p-6 rounded-lg">
+              <h4 class="mb-4 text-xl">项目讨论</h4>
               <div 
                 :id="`comments-${activeProject.id}`" 
                 class="artalk-comments"
@@ -323,21 +325,21 @@ onBeforeUnmount(() => {
               ></div>
             </div>
 
-            <!-- 添加导航按钮 -->
-            <div class="flex justify-between items-center mt-auto pt-8 border-t border-white/20">
+            <!-- 修改导航按钮文本和样式 -->
+            <div class="flex justify-between items-center mt-auto pt-8 border-t border-black/20">
               <button
                   @click="navigateProject('prev')"
-                  class="flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
+                  class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
               >
-                <span class="transform group-hover:-translate-x-1 transition-transform">←</span>
-                <span>Previous Project</span>
+                <span class="transform transition-transform group-hover:-translate-x-1">←</span>
+                <span>Previous Topic</span>
               </button>
               <button
                   @click="navigateProject('next')"
-                  class="flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
+                  class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
               >
-                <span>Next Project</span>
-                <span class="transform group-hover:translate-x-1 transition-transform">→</span>
+                <span>Next Topic</span>
+                <span class="transform transition-transform group-hover:translate-x-1">→</span>
               </button>
             </div>
           </div>
@@ -453,28 +455,28 @@ onBeforeUnmount(() => {
 
 /* Add Artalk custom styles */
 .artalk-editor-textarea {
-  @apply bg-white/10 border-2 border-white/20 rounded-lg transition-all duration-300
+  @apply bg-[#776C5D] border-2 border-black/20 rounded-2xl transition-all duration-300
   min-h-[150px] text-base p-4 text-white;
 }
 
 .artalk-editor-textarea:focus {
-  @apply border-white/40;
+  @apply border-black/40;
+}
+
+.artalk-editor-textarea::placeholder {
+  @apply text-white/70;
 }
 
 .artalk-send-btn {
-  @apply bg-white/20 text-white rounded-full px-8 py-2 font-bold transition-all duration-300;
+  @apply bg-[#776C5D] text-white rounded-full px-8 py-2 font-bold transition-all duration-300;
 }
 
 .artalk-send-btn:hover {
-  @apply bg-white/30;
+  @apply bg-[#665d50];
 }
 
 .artalk-comment-wrap {
-  @apply py-6 border-b border-white/10;
-}
-
-.artalk-comment-avatar {
-  @apply border-2 border-white/20 rounded-full;
+  @apply py-6 border-b border-black/10;
 }
 
 .artalk-comment-nick {
@@ -528,7 +530,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.artalk-editor-textarea) {
-  @apply bg-white/10 border-2 border-white/20 rounded-lg transition-all duration-300
+  @apply bg-[#776C5D] border-2 border-black/20 rounded-lg transition-all duration-300
   min-h-[150px] text-base p-4 text-white;
 }
 
@@ -539,5 +541,226 @@ onBeforeUnmount(() => {
 
 .text-[5vw] {
   font-size: 5vw;
+}
+
+/* 修改全局过渡效果，排除特定元素 */
+*:not(.flex-none *, h1, .text-[10vw], .text-[5vw], .text-xs, .text-sm) {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 移除头部标题的动画 */
+.flex-none h1,
+.flex-none h2,
+.flex-none h3,
+.flex-none p,
+.flex-none li {
+  transition: none;
+  transform: none;
+}
+
+.flex-none h1:hover,
+.flex-none h2:hover,
+.flex-none h3:hover,
+.flex-none p:hover,
+.flex-none li:hover {
+  transform: none;
+}
+
+/* 移除项目详情卡片标题的悬浮效果 */
+.fixed h3,
+.fixed h3:hover {
+  transition: none;
+  transform: none;
+}
+
+/* 页面背景切换动画 */
+.bg-\[\#F1F1F1\], .bg-\[\#222222\] {
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 项目列表动画优化 */
+.project-row {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
+}
+
+/* 项目hover效果 */
+.project-row:hover {
+  transform: translateX(8px);
+}
+
+/* 标题动画 */
+h1, h2, h3 {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+h1:hover, h2:hover, h3:hover {
+  transform: translateX(4px);
+}
+
+/* 标签动画 */
+.rounded-full {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rounded-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 详情卡片动画优化 */
+.fixed {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 按钮动画 */
+button {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* 导航按钮特殊动画 */
+.group:hover span {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 列表项淡入淡出优化 */
+.transition-all {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 滚动条平滑滚动 */
+.custom-scrollbar {
+  scroll-behavior: smooth;
+}
+
+/* Artalk 评论区动画 */
+.artalk-comments {
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.artalk-editor-textarea {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.artalk-editor-textarea:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 页面加载动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.flex-none {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 列表项交错动画 */
+.project-row {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.project-row:nth-child(1) { animation-delay: 0.1s; }
+.project-row:nth-child(2) { animation-delay: 0.2s; }
+.project-row:nth-child(3) { animation-delay: 0.3s; }
+.project-row:nth-child(4) { animation-delay: 0.4s; }
+.project-row:nth-child(5) { animation-delay: 0.5s; }
+.project-row:nth-child(6) { animation-delay: 0.6s; }
+.project-row:nth-child(7) { animation-delay: 0.7s; }
+.project-row:nth-child(8) { animation-delay: 0.8s; }
+
+/* 优化现有过渡效果 */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 添加弹性效果 */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(0.89);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 应用到标签和按钮的出现效果 */
+.rounded-full, button {
+  animation: bounceIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 移除标签的动画效果 */
+span[class*="tag"],
+.rounded-full {
+  transition: none;
+  transform: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+span[class*="tag"]:hover,
+.rounded-full:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* 移除标签的弹性动画 */
+.rounded-full {
+  animation: none;
+}
+
+/* 修改项目行的悬浮效果 */
+.project-row {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
+}
+
+/* 只在非活动状态下显示悬浮效果 */
+.project-row:not(.hover\:translate-x-0):hover {
+  transform: translateX(8px);
+}
+
+/* 禁用状态下移除所有交互效果 */
+.hover\:translate-x-0 {
+  transform: none !important;
+  transition: none !important;
+  cursor: default !important;
+}
+
+/* 添加滚动条隐藏样式 */
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 </style>
