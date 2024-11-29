@@ -5,10 +5,15 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'custom-dark': '#222222'
+      }
+    },
         fontFamily: {
             'clash-display': ['ClashDisplay', 'sans-serif'],
         },
   },
+  
   plugins: [],
 }
