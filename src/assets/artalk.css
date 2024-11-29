@@ -93,8 +93,10 @@
 
 /* 评论主体样式 */
 .atk-comment {
-  display: block;
-  padding: 10px;
+  border: none !important;
+  border-top: 2px solid var(--at-color-border) !important;
+  padding: 12px !important;
+  margin-bottom: 1px !important;
 }
 .atk-comment > .atk-avatar {
   display: block;
@@ -181,14 +183,11 @@
   margin-right: 6px;
 }
 .atk-comment > .atk-main > .atk-header .atk-badge {
-  color: #ffffff;
-  background: #776c5d;
-  font-weight: 500;
+  color: #fff;
 }
 .atk-comment > .atk-main > .atk-header .atk-pinned-badge {
-  color: #150e03;
-  background: #776c5d;
-  font-weight: 500;
+  color: #fff;
+  background: #f44336;
 }
 .atk-comment > .atk-main > .atk-header .atk-verified-icon {
   height: 1.4em;
@@ -215,6 +214,7 @@
 }
 .atk-comment > .atk-main > .atk-body > .atk-content {
   word-break: break-word;
+  font-size: 13px !important;
 }
 .atk-comment > .atk-main > .atk-body > .atk-content.atk-type-collapsed {
   border: 3px solid var(--at-color-bg-grey);
@@ -1601,6 +1601,11 @@ img[atk-emoticon] {
   color: #ffffff !important;
 }
 
+/* 隐藏网址输入框 */
+.atk-main-editor > .atk-header input[name="link"] {
+    display: none !important;
+}
+
 /* 评论内容样式调整 */
 .atk-comment > .atk-main > .atk-body > .atk-content {
   color: #5a5454 !important;
@@ -1620,13 +1625,10 @@ img[atk-emoticon] {
   color: #8e8277 !important;
 }
 
-/* Global admin badge override */
-.admin,
-[class*="admin-badge"],
-.atk-badge.admin {
-  background: #776c5d !important;
-  color: #ffffff !important;
-  padding: 0 6px !important;
-  border-radius: 3px !important;
-  font-size: 12px !important;
+/* 隐藏 Markdown 按钮 */
+/* 通过 aria-label 属性精确定位预览按钮 */
+.atk-plug-btn-wrap span.atk-plug-btn i[aria-label="预览"],
+span.atk-plug-btn i[aria-label="预览"],
+.atk-plug-btn[aria-label="预览"] {
+  display: none !important;
 }
