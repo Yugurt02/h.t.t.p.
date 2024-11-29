@@ -1,215 +1,322 @@
 <script setup lang="ts">
-import {ref, computed, onBeforeUnmount, nextTick} from 'vue'
-import Artalk from 'artalk'
-import '../assets/artalk.css'
+import { ref, computed, onBeforeUnmount, nextTick } from "vue";
+import Artalk from "artalk";
+import "../assets/artalk.css";
 
-const activeProject = ref(null)
-const emit = defineEmits(['project-active'])
+const activeProject = ref(null);
+const emit = defineEmits(["project-active"]);
 
 const visibleProjects = computed(() => {
-  return projects
-})
+  return projects;
+});
 
 const toggleProject = async (project) => {
   if (activeProject.value) {
     if (artalkInstances.value[activeProject.value.id]) {
-      artalkInstances.value[activeProject.value.id].destroy()
-      delete artalkInstances.value[activeProject.value.id]
+      artalkInstances.value[activeProject.value.id].destroy();
+      delete artalkInstances.value[activeProject.value.id];
     }
-    activeProject.value = null
-    emit('project-active', false)
+    activeProject.value = null;
+    emit("project-active", false);
   } else {
-    activeProject.value = project
-    emit('project-active', true)
-    await handleArtalkInstance(project.id, project.title)
+    activeProject.value = project;
+    emit("project-active", true);
+    await handleArtalkInstance(project.id, project.title);
   }
-}
+};
 
 const closeProject = () => {
   if (activeProject.value) {
-    Object.values(artalkInstances.value).forEach(instance => {
-      instance.destroy()
-    })
-    artalkInstances.value = {}
+    Object.values(artalkInstances.value).forEach((instance) => {
+      instance.destroy();
+    });
+    artalkInstances.value = {};
   }
-  activeProject.value = null
-  emit('project-active', false)
-}
+  activeProject.value = null;
+  emit("project-active", false);
+};
 
 const types = [
-  'Website',
-  'Visual / Brand',
-  'Ecommerce Platform',
-  'Web App',
-  'Mobile App'
-]
+  "Website",
+  "Visual / Brand",
+  "Ecommerce Platform",
+  "Web App",
+  "Mobile App",
+];
 
-const year = '2023-2024'
+const year = "2023-2024";
 
 const disciplines = [
-  'UI Design',
-  'UX Research',
-  'Art Direction',
-  'Web Development'
-]
+  "UI Design",
+  "UX Research",
+  "Art Direction",
+  "Web Development",
+];
 
 const projects = [
   {
-    id: '01',
-    color: '#E57373',
-    title: '个人经历与地域印象',
-    detailTitle: '探讨个人经历如何塑造地域印象',
-    description: '每个人都有独特的生活经历，这些经历如何影响我们对不同地域的理解和认知？让我们一起探讨个人视角下的地域印象。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "01",
+    color: "#E57373", 
+    title: "个人经历与地域印象",
+    detailTitle: "探讨个人经历如何塑造地域印象",
+    description: `"你是XX人啊，那一定很能吃辣..."
+                  "你是XX人啊，那口音一定很重..."
+                  "你是XX人啊，那性格一定很XX..."
+
+                  听到这些话，你是否会心一笑，还是默默叹气？
+                  每个地方的人似乎都被贴上了固定的标签，
+                  有时是褒义，有时是贬义，
+                  有时让我们觉得有趣，有时却令人哭笑不得。
+
+                  让我们来聊聊那些被"预设"的身份标签：
+                  👉 你被贴过什么有趣的标签？
+                  👉 你如何看待这些"预设"？
+                  👉 这些标签是否影响了你的生活？
+
+                  分享你的故事，也许你的经历会让更多人产生共鸣，
+                  让我们一起探讨：这些标签是如何影响着我们的表达与行为的？`,
+    tags: ["PREJUDICE", "IDENTITY", "STEREOTYPE"],
+    image: "img1"
   },
   {
-    id: '02',
-    color: '#DCE775',
-    title: '集体认知与刻板印象',
-    detailTitle: '解析群体认知中的刻板印象形成',
-    description: '探讨社会群体中普遍存在的刻板印象是如何形成和传播的，以及这些印象对社会交往的影响。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "02",
+    color: "#DCE775",
+    title: "集体认知与刻板印象",
+    detailTitle: "解析群体认知中的刻板印象形成",
+    description:
+      "探讨社会群体中普遍存在的刻板印象是如何形成和传播的，以及这些印象对社会交往的影响。",
+    tags: ["STEREOTYPE", "SOCIETY", "COGNITION"],
+    image: "img2"
   },
   {
-    id: '03',
-    color: '#D7CCC8',
-    title: '高考改革引发争议：综合素质评价将纳入录取标准',
-    detailTitle: '教育改革中的地域公平问题',
-    description: '探讨教育改革背景下的地域差异问题，以及如何确保教育资源的公平分配。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "03",
+    color: "#D7CCC8",
+    title: "教育改革中的地域公平问题",
+    detailTitle: "高考改革引发争议：综合素质评价将纳入录取标准",
+    description:
+      "探讨教育改革背景下的地域差异问题，以及如何确保教育资源的公平分配。",
+    tags: ["EDUCATION", "EQUALITY", "REFORM"],
   },
   {
-    id: '04',
-    color: '#4DD0E1',
-    title: '部分省会医院取消号贩子通道，专家号一号难求现象仍存',
-    detailTitle: '医疗资源分配与地域差异',
-    description: '讨论医疗资源分配不均衡的问题，以及如何改善基层医疗条件。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "04",
+    color: "#4DD0E1",
+    title: "医疗资源分配与地域差异",
+    detailTitle: "部分省会医院取消号贩子通道，专家号一号难求现象仍存",
+    description: "讨论医疗资源分配不均衡的问题，以及如何改善基层医疗条件。",
+    tags: ["HEALTHCARE", "RESOURCE", "INEQUALITY"],
   },
   {
-    id: '05',
-    color: '#FFF176',
-    title: '应届生就业选择：超80%青睐一线城市',
-    detailTitle: '就业选择与城市发展',
-    description: '探讨新生代求职者的就业倾向，以及不同城市的发展机遇。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "05",
+    color: "#FFF176",
+    title: "就业选择与城市发展",
+    detailTitle: "应届生就业选择：超80%青睐一线城市",
+    description: "探讨新生代求职者的就业倾向，以及不同城市的发展机遇。",
+    tags: ["EMPLOYMENT", "YOUTH", "URBANIZATION"],
   },
   {
-    id: '06',
-    color: '#4DB6AC',
-    title: '一线城市收紧人才落户政策，多地"抢人大战"升级',
-    detailTitle: '人才政策与区域发展',
-    description: '分析各地人才政策的变化，探讨区域发展与人才流动的关系。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "06",
+    color: "#4DB6AC",
+    title: '人才政策与区域发展',
+    detailTitle: '一线城市收紧人才落户政策，多地"抢人大战"升级',
+    description: "分析各地人才政策的变化，探讨区域发展与人才流动的关系。",
+    tags: ["POLICY", "TALENT", "DEVELOPMENT"],
   },
   {
-    id: '07',
-    color: '#64B5F6',
-    title: '"文化符号商业化"引争议：多地特色街区相似度高',
-    detailTitle: '文化特色与商业开发',
-    description: '探讨文化符号商业化过程中的同质化现象，以及如何保持地方特色。',
-    tags: ['PREJUDICE', 'IDENTITY']
+    id: "07",
+    color: "#64B5F6",
+    title: '文化特色与商业开发',
+    detailTitle: '"文化符号商业化"引争议：多地特色街区相似度高',
+    description: "探讨文化符号商业化过程中的同质化现象，以及如何保持地方特色。",
+    tags: ["CULTURE", "COMMERCE", "IDENTITY"],
   },
   {
-    id: '08',
-    color: '#64B5F6',
-    title: '网红城市市容之变：特色没了，"现代化"来了',
-    detailTitle: '城市发展与文化保护',
-    description: '讨论城市现代化进程中的文化传承问题，探索平衡发展与保护的方案。',
-    tags: ['PREJUDICE', 'IDENTITY']
-  }
-]
+    id: "08",
+    color: "#64B5F6",
+    title: '城市发展与文化保护',
+    detailTitle: '网红城市市容之变：特色没了，"现代化"来了',
+    description:
+      "讨论城市现代化进程中的文化传承问题，探索平衡发展与保护的方案。",
+    tags: ["CULTURE", "MODERNIZATION", "HERITAGE"],
+  },
+  {
+    id: "09",
+    color: "#FF9800",
+    title: '年轻人"消费降级"引热议：精打细算是无奈还是觉醒？',
+    detailTitle: "消费降级现象背后的社会思考",
+    description: `最新数据显示：
+                  - 90后月均外卖支出下降30%
+                  - 精致咖啡变速溶咖啡
+                  - 奢侈品消费大幅下降
+                  - "省钱"成为社交平台热词`,
+    tags: ["PREJUDICE", "IDENTITY"],
+  },
+  {
+    id: "10",
+    color: "#9C27B0",
+    title: "当IP属地成为观点的枷锁",
+    detailTitle: "IP属地标签对网络讨论的影响",
+    description: `近日，一位来自西部地区的网友在社交平台发起"双一流高校扩招建议"的讨论，引发争议。事件经过：
+
+                  - 该网友详细论证了扩大招生名额的可行性
+                  - 有人发现其IP属地后评论："就你们那教育水平也配谈这个？"
+                  - 随后评论区变成了地域身份之争
+                  - 最终发帖人删除了原贴及其所有相关评论
+
+                  类似案例频频发生：
+                  - 东北IP谈经济发展被嘲讽
+                  - 内陆IP谈教育改革遭否定
+                  - 三四线城市IP谈房价被讽刺
+
+                  [原贴部分评论]
+                  "说得很有道理，确实需要考虑教育公平..."
+                  "你们那边高考都什么水平？哪来的发言权？"
+                  "建议你先了解一下双一流高校的要求..."
+                  "这种地方来的，懂什么教育？"`,
+    tags: ["PREJUDICE", "IDENTITY"],
+  },
+  {
+    id: "11",
+    color: "#4CAF50",
+    title: '"进厂打工"争议：地域身份如何影响职场机会',
+    detailTitle: "职场中的地域歧视现象探讨",
+    description: `事件概要：
+                  某工厂招聘广告明确标注"不要XX省份人"引发热议。
+                  招聘方称"过往数据显示该地区离职率高"。
+
+                  [评论区]
+                  "这就是赤裸裸的地域歧视！"
+                  "数据会说话，这是事实。"
+                  "一人一个标签，是不是把人看得太简单了？"
+                  "要讨论离职率，得先谈谈工资和待遇吧。"`,
+    tags: ["PREJUDICE", "IDENTITY"],
+  },
+  {
+    id: "12",
+    color: "#2196F3",
+    title: "IP属地显示政策实施二周年观察",
+    detailTitle: "IP属地政策的利弊分析",
+    description: `政策初衷：
+                  - 打击网络谣言
+                  - 提高发言真实性
+                  - 促进理性讨论
+
+                  实际效果：
+                  - 地域偏见更显著
+                  - 身份标签更固化
+                  - 话语权重更失衡
+
+                  [相关讨论]
+                  "显示IP属地真的能让讨论更理性吗？"
+                  "有些观点刚看到还觉得有道理，一看IP就开始怀疑..."
+                  "现在说话之前都要考虑自己的IP会不会影响别人的判断"
+                  "到底是因为IP产生了偏见，还是IP放大了原有的偏见？"`,
+    tags: ["PREJUDICE", "IDENTITY"],
+  },
+];
 
 const getProjectStyles = (project) => {
-  if (!activeProject.value) return {
-    transition: 'all 0.3s ease',
-    cursor: 'pointer'
-  }
+  if (!activeProject.value)
+    return {
+      transition: "all 0.3s ease",
+      cursor: "pointer",
+    };
 
-  const isActive = activeProject.value?.id === project.id
+  const isActive = activeProject.value?.id === project.id;
   return {
-    opacity: isActive ? '1' : '0.05',
-    filter: isActive ? 'blur(0)' : 'blur(2px)',
-    transition: 'all 0.3s ease',
-    cursor: isActive ? 'pointer' : 'default',
-    pointerEvents: isActive ? 'auto' : 'none',
-    transform: 'none'
-  }
-}
+    opacity: isActive ? "1" : "0.05",
+    filter: isActive ? "blur(0)" : "blur(2px)",
+    transition: "all 0.3s ease",
+    cursor: isActive ? "pointer" : "default",
+    pointerEvents: isActive ? "auto" : "none",
+    transform: "none",
+  };
+};
 
 // 添加获取上一个/下一个项目的方法
 const getAdjacentProject = (direction) => {
-  const currentIndex = projects.findIndex(p => p.id === activeProject.value?.id)
-  if (currentIndex === -1) return null
+  const currentIndex = projects.findIndex(
+    (p) => p.id === activeProject.value?.id
+  );
+  if (currentIndex === -1) return null;
 
-  if (direction === 'prev') {
-    return currentIndex > 0 ? projects[currentIndex - 1] : projects[projects.length - 1]
+  if (direction === "prev") {
+    return currentIndex > 0
+      ? projects[currentIndex - 1]
+      : projects[projects.length - 1];
   } else {
-    return currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0]
+    return currentIndex < projects.length - 1
+      ? projects[currentIndex + 1]
+      : projects[0];
   }
-}
+};
 
 // 添加切换到相邻项目的方法
 const navigateProject = async (direction) => {
-  const nextProject = getAdjacentProject(direction)
+  const nextProject = getAdjacentProject(direction);
   if (nextProject) {
-    activeProject.value = nextProject
-    emit('project-active', true)
-    await handleArtalkInstance(nextProject.id, nextProject.title)
+    activeProject.value = nextProject;
+    emit("project-active", true);
+    await handleArtalkInstance(nextProject.id, nextProject.title);
   }
-}
+};
 
 // 修改 Artalk 实例管理部分
-const artalkInstances = ref<{ [key: string]: Artalk }>({})
+const artalkInstances = ref<{ [key: string]: Artalk }>({});
 
 // 添加一个专门的方法来处理 Artalk 实例
 const handleArtalkInstance = async (projectId: string, title: string) => {
   // 先毁所有现有实例
-  Object.values(artalkInstances.value).forEach(instance => {
-    instance.destroy()
-  })
-  artalkInstances.value = {}
+  Object.values(artalkInstances.value).forEach((instance) => {
+    instance.destroy();
+  });
+  artalkInstances.value = {};
 
   // 等待 DOM 更新
-  await nextTick()
-  
+  await nextTick();
+
   // 获取新的评论容器元素
-  const commentEl = document.getElementById(`comments-${projectId}`)
-  if (!commentEl) return
+  const commentEl = document.getElementById(`comments-${projectId}`);
+  if (!commentEl) return;
 
   // 创建新实例
   artalkInstances.value[projectId] = new Artalk({
     el: commentEl,
     pageKey: `project-${projectId}`,
     pageTitle: title,
-    server: 'http://localhost:23366',
-    site: 'h.t.t.p.',
-    placeholder: '分享你的想法...',
+    server: "http://localhost:23366",
+    site: "h.t.t.p.",
+    placeholder: "分享你的想法...",
     // 添加更多配置以确保评论正确加载
     requestTimeout: 15000,
     useBackendConf: true,
+
     // 添加错误处理
     onError: (err) => {
-      console.error('Artalk error:', err)
-    }
-  })
-}
+      console.error("Artalk error:", err);
+    },
+  });
+};
 
 // 确保组件卸载时清理所有实例
 onBeforeUnmount(() => {
-  Object.values(artalkInstances.value).forEach(instance => {
-    instance.destroy()
-  })
-  artalkInstances.value = {}
-})
+  Object.values(artalkInstances.value).forEach((instance) => {
+    instance.destroy();
+  });
+  artalkInstances.value = {};
+});
 </script>
 
 <template>
-  <div class="bg-[#F1F1F1] min-h-screen" :class="{'bg-[#222]': activeProject}">
-    <div class="flex flex-col mx-auto px-0 py-4 max-w-[1920*2px] h-screen">
+  <div
+    class="bg-[#F1F1F1] min-h-screen"
+    :class="{ 'bg-custom-dark': activeProject }"
+  >
+    <div class="flex flex-col mx-auto px-0 pt-4 pb-0 max-w-[1920*2px] h-screen">
       <!-- 头部信息 -->
-      <div :class="{'text-[#E2E2E2]': activeProject}" class="flex-none">
-        <h1 class="mb-4 px-4 font-black text-[10vw] leading-[0.8] tracking-tight">
+      <div :class="{ 'text-[#E2E2E2]': activeProject }" class="flex-none border-[#222222] border-b-2">
+        <h1
+          class="mb-4 px-4 font-black text-[10vw] leading-[0.8] tracking-tight"
+        >
           Forum
           <span class="block text-[4vw]">Discussion Space</span>
         </h1>
@@ -219,7 +326,9 @@ onBeforeUnmount(() => {
           <div>
             <h3 class="mb-2 text-xs uppercase">TYPE</h3>
             <ul class="space-y-1">
-              <li v-for="type in types" :key="type" class="text-sm">{{ type }}</li>
+              <li v-for="type in types" :key="type" class="text-sm">
+                {{ type }}
+              </li>
             </ul>
           </div>
 
@@ -233,7 +342,11 @@ onBeforeUnmount(() => {
           <div>
             <h3 class="mb-2 text-xs uppercase">TYPE</h3>
             <ul class="space-y-1">
-              <li v-for="discipline in disciplines" :key="discipline" class="text-sm">
+              <li
+                v-for="discipline in disciplines"
+                :key="discipline"
+                class="text-sm"
+              >
                 {{ discipline }}
               </li>
             </ul>
@@ -241,111 +354,141 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <!-- 主内容区域 - 设置为可滚动区域 -->
-      <div class="flex flex-1 mt-24 overflow-hidden">
-        <!-- 项目列 - 加滚动容器 -->
-        <div class="flex flex-col w-[100%]">
-          <div class="border-container" :class="{'border-blur': activeProject}">
-            <!-- 滚动区域容器 -->
-            <div class="custom-scrollbar overflow-y-auto">
-              <TransitionGroup
-                  enter-active-class="transition-all duration-500 ease-out"
-                  leave-active-class="transition-all duration-300 ease-in"
-                  enter-from-class="opacity-0"
-                  leave-to-class="opacity-0"
-              >
-                <div v-for="project in visibleProjects"
-                     :key="project.id"
-                     class="relative"
-                     @click="toggleProject(project)"
-                     :class="{'hover:translate-x-0': activeProject && activeProject.id !== project.id}">
-                  <!-- 调整项目行的样式 -->
-                  <div
-                      class="flex items-center border-gray-200 px-6 border-b h-16 transition-all duration-300"
+      <!-- 主内容区域 -->
+      <!-- 主内容区域容器,设置可滚动 -->
+      <div class="flex-1 overflow-y-auto">
+        <!-- 项目列表容器,设置最大宽度 -->
+        <div class="mx-auto w-[100%]">
+          <!-- 边框容器,根据activeProject状态添加模糊效果 -->
+          <div class="border-container border-gray-600" :class="{ 'border-blur': activeProject }">
+            <!-- 项目列表过渡动画组 -->
+            <TransitionGroup
+              enter-active-class="transition-all duration-500 ease-out"
+              leave-active-class="transition-all duration-300 ease-in"
+              enter-from-class="opacity-0"
+              leave-to-class="opacity-0"
+            >
+              <!-- 遍历并渲染每个项目 -->
+              <div v-for="project in visibleProjects" :key="project.id" class="relative"
+                @click="toggleProject(project)"
+                :class="{ 'hover:translate-x-0': activeProject && activeProject.id !== project.id }">
+                <!-- 单个项目内容布局 -->
+                <div class="flex items-center border-gray-600 px-6 border-b h-16 transition-all duration-300"
+                  :class="{
+                    'bg-[#F1F1F1] text-black border-gray-600': activeProject?.id === project.id,
+                  }"
+                  :style="getProjectStyles(project)">
+                  <!-- 项目编号 -->
+                  <span class="w-16 font-semibold text-2xl">{{ project.id.padStart(2, "0") }}</span>
+                  <!-- 项目颜色标识 -->
+                  <div class="mr-8 rounded-sm w-4 h-4" :style="{ backgroundColor: project.color }"></div>
+                  <!-- 项目标题 -->
+                  <h2 class="flex-1 pr-8 text-ellipsis text-xl whitespace-nowrap overflow-hidden">
+                    {{ project.title }}
+                  </h2>
+                  <!-- 项目标签组 -->
+                  <div class="flex gap-4 ml-auto">
+                    <!-- 遍历渲染标签 -->
+                    <span v-for="tag in project.tags" :key="tag"
+                      class="px-3 py-1 border border-black rounded-full text-xs whitespace-nowrap"
                       :class="{
-                         'bg-[#F1F1F1] text-black border-gray-200': activeProject?.id === project.id,
-                         'text-white border-gray-700': activeProject && activeProject.id !== project.id,
-                       }"
-                      :style="getProjectStyles(project)">
-                    <span class="w-16 text-base">{{ project.id.padStart(2, '0') }}</span>
-                    <div class="mr-8 w-4 h-4" :style="{ backgroundColor: project.color }"></div>
-                    <h2 class="flex-1 pr-8 text-ellipsis text-xl whitespace-nowrap overflow-hidden">{{
-                        project.title
-                      }}</h2>
-                    <div class="flex gap-4 ml-auto">
-                      <span v-for="tag in project.tags"
-                            :key="tag"
-                            class="px-3 py-1 rounded-full text-xs whitespace-nowrap"
-                            :class="{
-                              'bg-gray-100 text-black': activeProject?.id === project.id,
-                              'bg-gray-800 text-white': activeProject && activeProject.id !== project.id
-                            }">
-                        #{{ tag }}
-                      </span>
-                    </div>
+                        'bg-[#F1F1F1] text-black': activeProject?.id === project.id,
+                      }">
+                      #{{ tag }}
+                    </span>
                   </div>
                 </div>
-              </TransitionGroup>
-            </div>
+              </div>
+            </TransitionGroup>
           </div>
         </div>
+      </div>
 
-        <!-- 项目详情卡片 - 减少宽度至 10% -->
+      <!-- 项目详情卡片 - 减少宽度至 10% -->
 
-        <Transition
-            enter-active-class="transition-all duration-500 ease-out"
-            enter-from-class="opacity-0 translate-y-full"
-            enter-to-class="opacity-100 translate-y-0"
-            leave-active-class="transition-all duration-300 ease-in"
-            leave-from-class="opacity-100 translate-y-0"
-            leave-to-class="opacity-0 translate-y-full"
+      <Transition
+        enter-active-class="transition-all duration-500 ease-out"
+        enter-from-class="opacity-0 translate-y-full"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition-all duration-300 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 translate-y-full"
+      >
+        <div
+          v-if="activeProject"
+          class="top-0 right-0 fixed flex flex-col border-4 bg-[#DED3C1] px-6 py-4 border-black/90 rounded-xl w-3/5 h-full text-black overflow-y-auto scrollbar-none"
         >
-          <div v-if="activeProject"
-               class="top-0 right-0 fixed flex flex-col border-2 bg-[#DED3C1] p-8 border-black rounded-xl w-3/5 h-full text-black overflow-y-auto scrollbar-none">
-            <!-- 主要内容 -->
-            <div class="flex justify-between items-start">
-              <div class="flex-1">
-                <div class="mb-4 text-sm">SKILLSUNION</div>
-                <h3 class="mb-4 text-4xl">{{ activeProject.detailTitle }}</h3>
-                <p class="mb-6 max-w-3xl text-lg">{{ activeProject.description }}</p>
+          <!-- 标题栏 -->
+          
+            <div class="flex justify-between items-start mb-6 h-20">
+              <div class="space-y-[-4px]">
+                <div v-for="tag in activeProject.tags" :key="tag" class="text-sm leading-tight">
+                  #{{ tag }}
+                </div>
               </div>
-              <button @click.stop="closeProject"
-                      class="text-black/70 hover:text-black transition-colors">
+              <button
+                @click.stop="closeProject"
+                class="text-black/70 hover:text-black transition-colors"
+              >
                 × CLOSE
               </button>
             </div>
-
-            <!-- 评论区域 -->
-            <div class="flex-1 bg-[#B1A696] mt-8 p-6 rounded-lg">
-              <h4 class="mb-4 text-xl">项目讨论</h4>
-              <div 
-                :id="`comments-${activeProject.id}`" 
-                class="artalk-comments"
-                :key="`comments-${activeProject.id}`"
-              ></div>
+            <!-- 主要内容 -->
+            <div class="flex-1">
+              <h2 class="mb-auto font-semibold text-[5vw] leading-[1]">
+                {{ "TOPIC" + " " + activeProject.id.padStart(2, "0") + ":" }}
+              </h2>
+              <h3 class="mb-4 text-2xl">{{ activeProject.detailTitle }}</h3>
+              <!-- 图片 -->
+              <img v-if="activeProject.image" 
+                :src="'/src/assets/img/' + activeProject.image + '.png'" 
+                alt="Topic image"
+                class="mx-auto my-6 rounded-lg w-[95%] h-auto"
+              />
+              <!-- 描述 -->
+              <p class="mb-6 ml-6 max-w-3xl text-[1vw] whitespace-pre-line">
+                {{ activeProject.description }}
+              </p>
             </div>
+          
 
-            <!-- 修改导航按钮文本和样式 -->
-            <div class="flex justify-between items-center mt-auto pt-8 border-t border-black/20">
-              <button
-                  @click="navigateProject('prev')"
-                  class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
-              >
-                <span class="transform transition-transform group-hover:-translate-x-1">←</span>
-                <span>Previous Topic</span>
-              </button>
-              <button
-                  @click="navigateProject('next')"
-                  class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
-              >
-                <span>Next Topic</span>
-                <span class="transform transition-transform group-hover:translate-x-1">→</span>
-              </button>
-            </div>
+          <!-- 评论区域 -->
+          <div class="flex-1 bg-[#b5a998] mt-8 p-6 rounded-lg">
+            <h4 class="mb-4 text-xl">COMMENTS</h4>
+            <div
+              :id="`comments-${activeProject.id}`"
+              class="artalk-comments"
+              :key="`comments-${activeProject.id}`"
+            ></div>
           </div>
-        </Transition>
 
-      </div>
+          <!-- 修改导航按钮文本和样式 -->
+          <div
+            class="flex justify-between items-center mt-auto pt-8 border-t border-black/20"
+          >
+            <button
+              @click="navigateProject('prev')"
+              class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
+            >
+              <span
+                class="transform transition-transform group-hover:-translate-x-1"
+                >←</span
+              >
+              <span>Previous Topic</span>
+            </button>
+            <button
+              @click="navigateProject('next')"
+              class="flex items-center gap-2 text-black/70 hover:text-black transition-colors group"
+            >
+              <span>Next Topic</span>
+              <span
+                class="transform transition-transform group-hover:translate-x-1"
+                >→</span
+              >
+            </button>
+          </div>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -384,13 +527,13 @@ onBeforeUnmount(() => {
 }
 
 .border-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background-color: #e5e7eb; /* border-gray-200 的颜色 */
+  height: 0px;
+  background-color: #53565c; /* border-gray-200 的颜色 */
   transition: all 0.3s ease;
 }
 
@@ -403,9 +546,10 @@ onBeforeUnmount(() => {
 
 /* 自定义滚动条样式 */
 .custom-scrollbar {
-  height: calc(100vh - 280px); /* 减去头部高度和边距 */
+  height: calc(100vh - 220px) !important; /* 减少上方预留空间 */
   scrollbar-width: thin;
   scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+  overflow-y: auto;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -453,87 +597,6 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-/* Add Artalk custom styles */
-.artalk-editor-textarea {
-  @apply bg-[#776C5D] border-2 border-black/20 rounded-2xl transition-all duration-300
-  min-h-[150px] text-base p-4 text-white;
-}
-
-.artalk-editor-textarea:focus {
-  @apply border-black/40;
-}
-
-.artalk-editor-textarea::placeholder {
-  @apply text-white/70;
-}
-
-.artalk-send-btn {
-  @apply bg-[#776C5D] text-white rounded-full px-8 py-2 font-bold transition-all duration-300;
-}
-
-.artalk-send-btn:hover {
-  @apply bg-[#665d50];
-}
-
-.artalk-comment-wrap {
-  @apply py-6 border-b border-black/10;
-}
-
-.artalk-comment-nick {
-  @apply font-bold text-white;
-}
-
-.artalk-comment-content {
-  @apply text-white/90;
-}
-
-/* Hide unnecessary elements */
-.artalk-layer-dialog-wrap,
-.artalk-editor-plug-wrap {
-  display: none !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .artalk-send-btn {
-    @apply w-full mt-4;
-  }
-}
-
-/* 调整 Artalk 容器样式 */
-.artalk-comments {
-  @apply h-full overflow-y-auto relative;
-  min-height: 300px; /* 确保容器有足够的高度 */
-}
-
-/* 添加加载状态样式 */
-.artalk-comments::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-
-.artalk-comments.loading::before {
-  opacity: 1;
-}
-
-/* 确保评论内容在暗色主题下可读 */
-:deep(.artalk-comment-content) {
-  @apply text-white/90;
-}
-
-:deep(.artalk-editor-textarea) {
-  @apply bg-[#776C5D] border-2 border-black/20 rounded-lg transition-all duration-300
-  min-h-[150px] text-base p-4 text-white;
-}
-
 /* 添加新的样式 */
 .text-[10vw] {
   font-size: 10vw;
@@ -574,7 +637,8 @@ onBeforeUnmount(() => {
 }
 
 /* 页面背景切换动画 */
-.bg-\[\#F1F1F1\], .bg-\[\#222222\] {
+.bg-\[\#F1F1F1\],
+.bg-\[\#222222\] {
   transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -590,13 +654,17 @@ onBeforeUnmount(() => {
 }
 
 /* 标题动画 */
-h1, h2, h3 {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+h1,
+h2,
+h3 {
+  transition: none !important;
+  transform: none !important;
 }
 
-h1:hover, h2:hover, h3:hover {
-  transform: translateX(4px);
+h1:hover,
+h2:hover,
+h3:hover {
+  transform: none !important;
 }
 
 /* 标签动画 */
@@ -638,19 +706,7 @@ button:hover {
   scroll-behavior: smooth;
 }
 
-/* Artalk 评论区动画 */
-.artalk-comments {
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
-.artalk-editor-textarea {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.artalk-editor-textarea:focus {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
 /* 页面加载动画 */
 @keyframes fadeIn {
@@ -674,14 +730,30 @@ button:hover {
   animation-fill-mode: both;
 }
 
-.project-row:nth-child(1) { animation-delay: 0.1s; }
-.project-row:nth-child(2) { animation-delay: 0.2s; }
-.project-row:nth-child(3) { animation-delay: 0.3s; }
-.project-row:nth-child(4) { animation-delay: 0.4s; }
-.project-row:nth-child(5) { animation-delay: 0.5s; }
-.project-row:nth-child(6) { animation-delay: 0.6s; }
-.project-row:nth-child(7) { animation-delay: 0.7s; }
-.project-row:nth-child(8) { animation-delay: 0.8s; }
+.project-row:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.project-row:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.project-row:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.project-row:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.project-row:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.project-row:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.project-row:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.project-row:nth-child(8) {
+  animation-delay: 0.8s;
+}
 
 /* 优化现有过渡效果 */
 .slide-left-enter-active,
@@ -712,7 +784,8 @@ button:hover {
 }
 
 /* 应用到标签和按钮的出现效果 */
-.rounded-full, button {
+.rounded-full,
+button {
   animation: bounceIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -731,12 +804,12 @@ span[class*="tag"]:hover,
   box-shadow: none !important;
 }
 
-/* 移除标签的弹性动画 */
+/* 移除标签弹性动画 */
 .rounded-full {
   animation: none;
 }
 
-/* 修改项目行的悬浮效果 */
+/* 修改目行的悬浮效果 */
 .project-row {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity, filter;
@@ -762,5 +835,64 @@ span[class*="tag"]:hover,
 
 .scrollbar-none::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+/* 移除顶部栏目的加载动画 */
+.flex-none {
+  animation: none !important;
+}
+
+.flex-none * {
+  animation: none !important;
+}
+
+/* 自定义滚动条样式 */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #222222;
+}
+
+/* 统一过渡动画时间 */
+.transition-all {
+  transition-duration: 300ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 移除头部标题的动画 */
+.flex-none h1,
+.flex-none h2 {
+  transition: none !important;
+  transform: none !important;
+}
+
+.flex-none h1:hover,
+.flex-none h2:hover {
+  transform: none !important;
+}
+
+/* 移除顶部栏目的加载动画 */
+.flex-none {
+  animation: none !important;
+}
+
+.flex-none * {
+  animation: none !important;
 }
 </style>
