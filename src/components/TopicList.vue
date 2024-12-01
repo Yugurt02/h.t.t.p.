@@ -39,7 +39,6 @@ const closeProject = () => {
 const types = [
   "Website",
   "Visual / Brand",
-  "Ecommerce Platform",
   "Web App",
   "Mobile App",
 ];
@@ -59,24 +58,17 @@ const projects = [
     color: "#E57373", 
     title: "个人经历与地域印象",
     detailTitle: "探讨个人经历如何塑造地域印象",
-    description: `"你是XX人啊，那一定很能吃辣..."
-                  "你是XX人啊，那口音一定很重..."
-                  "你是XX人啊，那性格一定很XX..."
-
-                  听到这些话，你是否会心一笑，还是默默叹气？
-                  每个地方的人似乎都被贴上了固定的标签，
-                  有时是褒义，有时是贬义，
-                  有时让我们觉得有趣，有时却令人哭笑不得。
-
-                  让我们来聊聊那些被"预设"的身份标签：
-                  👉 你被贴过什么有趣的标签？
-                  👉 你如何看待这些"预设"？
-                  👉 这些标签是否影响了你的生活？
-
-                  分享你的故事，也许你的经历会让更多人产生共鸣，
-                  让我们一起探讨：这些标签是如何影响着我们的表达与行为的？`,
+    description: `"不好意思，看到你是XX省的，可能不太合适..."
+    上周，应届生小林在某互联网公司面试时遇到这样的回复。面试官解释说，根据公司历史数据，这个省份的员工离职率偏高，"纯粹从数据角度考虑"。
+这并非个例。人才市场调研机构最新数据显示，35%的企业HR会将求职者籍贯作为筛选参考，其中超过四分之一的公司明确存在地域偏好。
+"我们不是歧视，是基于数据做决策。"这家公司的HR总监在接受采访时这样解释。但当被问及具体的"数据"时，他们承认这个"高离职率"的结论来自于不到50人的样本。
+一位人力资源专家指出，这种貌似理性的筛选背后，折射出招聘市场的固化思维。用地域标签代替个人评估，不仅是对人才的浪费，更是变相的偏见合理化。
+有趣的是，当记者走访多家企业后发现，不同公司对"高离职率地区"的判断并不一致。有的认为是北方，有的说是南方；有的觉得是发达地区，有的则指向欠发达地区。这种矛盾的判断本身就说明，所谓的"数据规律"可能只是偏见的另一种表达。
+最近，一份针对2000名求职者的调查显示，42%的人在求职过程中遇到过基于地域的筛选。而当这些经历被发到社交平台后，评论区往往会出现更多类似的遭遇。
+"用人单位有选择的自由，但如果这种选择建立在对特定群体的预设上，那就不仅是招聘问题，而是整个社会的认知偏差了。"一位社会学者在接受采访时这样说。`,
     tags: ["PREJUDICE", "IDENTITY", "STEREOTYPE"],
-    image: "img1"
+    image: "img1",
+    imageCaption: "社交媒体中的地域标签讨论"
   },
   {
     id: "02",
@@ -315,18 +307,18 @@ onBeforeUnmount(() => {
       <!-- 头部信息 -->
       <div :class="{ 'text-[#E2E2E2]': activeProject }" class="flex-none border-[#222222] border-b-2">
         <h1
-          class="mb-4 px-4 font-black text-[10vw] leading-[0.8] tracking-tight"
+          class="mb-4 px-4 font-black text-[clamp(3rem,8vw,10rem)] leading-[0.8] tracking-tight"
         >
           Forum
-          <span class="block text-[4vw]">Discussion Space</span>
+          <span class="block text-[clamp(1.5rem,4vw,5rem)]">Discussion Space</span>
         </h1>
 
         <div class="gap-4 grid grid-cols-8 mt-16 mb-12 px-5">
           <!-- 类型部分 -->
           <div>
-            <h3 class="mb-2 text-xs uppercase">TYPE</h3>
+            <h3 class="mb-2 text-xs md:text-sm uppercase font-medium">TYPE</h3>
             <ul class="space-y-1">
-              <li v-for="type in types" :key="type" class="text-sm">
+              <li v-for="type in types" :key="type" class="text-xs md:text-sm ">
                 {{ type }}
               </li>
             </ul>
@@ -334,18 +326,18 @@ onBeforeUnmount(() => {
 
           <!-- 年份部分 -->
           <div>
-            <h3 class="mb-2 text-xs uppercase">YEAR</h3>
-            <p class="text-sm">{{ year }}</p>
+            <h3 class="mb-2 text-xs md:text-sm uppercase">YEAR</h3>
+            <p class="text-xs md:text-sm ">{{ year }}</p>
           </div>
 
           <!-- 学科部分 -->
           <div>
-            <h3 class="mb-2 text-xs uppercase">TYPE</h3>
+            <h3 class="mb-2 text-xs md:text-sm uppercase">DISCIPLINE</h3>
             <ul class="space-y-1">
               <li
                 v-for="discipline in disciplines"
                 :key="discipline"
-                class="text-sm"
+                class="text-xs md:text-sm"
               >
                 {{ discipline }}
               </li>
@@ -381,9 +373,9 @@ onBeforeUnmount(() => {
                   <!-- 项目编号 -->
                   <span class="w-16 font-semibold text-2xl">{{ project.id.padStart(2, "0") }}</span>
                   <!-- 项目颜色标识 -->
-                  <div class="mr-8 rounded-sm w-4 h-4" :style="{ backgroundColor: project.color }"></div>
+                  <div class="mr-8 rounded-sm w-[clamp(1rem,1vw,1.5rem)] h-[clamp(1rem,1vw,1.5rem)]" :style="{ backgroundColor: project.color }"></div>
                   <!-- 项目标题 -->
-                  <h2 class="flex-1 pr-8 text-ellipsis text-xl whitespace-nowrap overflow-hidden">
+                  <h2 class="flex-1 pr-8 text-[clamp(1rem,2vw,1.5rem)] text-ellipsis whitespace-nowrap overflow-hidden">
                     {{ project.title }}
                   </h2>
                   <!-- 项目标签组 -->
@@ -418,42 +410,50 @@ onBeforeUnmount(() => {
           v-if="activeProject"
           class="top-0 right-0 fixed flex flex-col border-4 bg-[#DED3C1] px-6 py-4 border-black/90 rounded-xl w-3/5 h-full text-black overflow-y-auto scrollbar-none"
         >
-          <!-- 标题栏 -->
           
+            <!-- 导航栏 -->
             <div class="flex justify-between items-start mb-6 h-20">
               <div class="space-y-[-4px]">
-                <div v-for="tag in activeProject.tags" :key="tag" class="text-sm leading-tight">
+                <div v-for="tag in activeProject.tags" :key="tag" class="text-[clamp(0.75rem,1vw,0.875rem)] leading-tight">
                   #{{ tag }}
                 </div>
               </div>
               <button
                 @click.stop="closeProject"
-                class="text-black/70 hover:text-black transition-colors"
+                class="text-black/70 text-[clamp(0.75rem,1vw,0.875rem)] hover:text-black transition-colors"
               >
                 × CLOSE
               </button>
             </div>
+            
             <!-- 主要内容 -->
+            <!-- 标题栏 --> 
             <div class="flex-1">
-              <h2 class="mb-auto font-semibold text-[5vw] leading-[1]">
+              <h2 class="mb-auto font-semibold text-[clamp(1rem,2vw,1.5rem)] leading-[1]">
                 {{ "TOPIC" + " " + activeProject.id.padStart(2, "0") + ":" }}
               </h2>
-              <h3 class="mb-4 text-2xl">{{ activeProject.detailTitle }}</h3>
-              <!-- 图片 -->
-              <img v-if="activeProject.image" 
-                :src="'/src/assets/img/' + activeProject.image + '.png'" 
-                alt="Topic image"
-                class="mx-auto my-6 rounded-lg w-[95%] h-auto"
-              />
+              <h3 class="mb-4 font-black text-[clamp(1.5rem,4vw,3rem)]">{{ activeProject.detailTitle }}</h3>
+              <!-- 图片和注释容器 -->
+              <div v-if="activeProject.image" class="relative mx-auto my-6">
+                <img 
+                  :src="'/src/assets/img/' + activeProject.image + '.png'" 
+                  alt="Topic image"
+                  class="w-full h-auto"
+                />
+                <div v-if="activeProject.imageCaption" 
+                  class="mt-1 text-xs text-black/80 text-right underline">
+                  {{ activeProject.imageCaption }}
+                </div>
+              </div>
               <!-- 描述 -->
-              <p class="mb-6 ml-6 max-w-3xl text-[1vw] whitespace-pre-line">
+              <p class="mb-2 max-w-3xl text-[clamp(0.75rem, 1vw, 0.875rem)] whitespace-pre-line mx-auto text-left">
                 {{ activeProject.description }}
               </p>
             </div>
           
 
           <!-- 评论区域 -->
-          <div class="flex-1 bg-[#b5a998] mt-8 p-6 rounded-lg">
+          <div class="flex-1 bg-[#b5a998] mt-4 p-6 rounded-lg">
             <h4 class="mb-4 text-xl">COMMENTS</h4>
             <div
               :id="`comments-${activeProject.id}`"
