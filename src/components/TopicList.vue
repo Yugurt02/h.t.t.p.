@@ -446,7 +446,7 @@ onBeforeUnmount(() => {
                 </div>
               </div>
               <!-- 描述 -->
-              <p class="mb-2 max-w-3xl text-[clamp(0.75rem, 1vw, 0.875rem)] whitespace-pre-line mx-auto text-left">
+              <p class="mb-2 max-w-3xl text-[clamp(0.75rem, 1vw, 0.875rem)] whitespace-pre-line">
                 {{ activeProject.description }}
               </p>
             </div>
