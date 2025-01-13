@@ -12,29 +12,14 @@ const routes = [
         component: () => import('@/components/Login.vue')
     },
     {
-        path: '/forum',
-        name: 'Forum',
-        component: () => import('@/components/Forum.vue')
-    },
-    {
-        path: '/forum/post1',
-        name: 'Post1',
-        component: () => import('@/components/Post1.vue')
-    },
-    {
-        path: '/forum/post2',
-        name: 'Post2',
-        component: () => import('@/components/Post2.vue')
-    },
-    {
-        path: '/forum/post3',
-        name: 'Post3',
-        component: () => import('@/components/Post3.vue')
-    },
-    {
         path: '/list',
         name: 'List',
         component: () => import('@/components/TopicList.vue')
+    },
+    {
+        path: '/msg',
+        name: 'Msg',
+        component: () => import('@/components/MessageBoard.vue')
     },
 
 ]

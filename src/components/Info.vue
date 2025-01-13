@@ -2,6 +2,9 @@
 import {useRouter} from "vue-router";
 const router = useRouter();
 
+const toList = () => {
+  router.push("/list")
+}
 const toLogin = () => {
   router.push("/login")
 }
@@ -11,7 +14,7 @@ const toLogin = () => {
   <div class="min-h-screen bg-[#F1F1F1] text-black p-4 sm:p-8 flex flex-col">
     <div class="max-w-[2500px] m-auto w-full flex-1 flex flex-col">
       <!-- Main Title -->
-      <h1 class="text-[clamp(5rem,13vw,18rem)] font-bold tracking-tighter leading-[0.49]">
+      <h1 class="text-[clamp(2rem,9vw,17rem)] font-helvatica font-black tracking-tighter leading-[0.75]">
         <span class="block">Hidden</span>
         <span class="block">Tensions</span>
         <span class="block">Transparent</span>
@@ -81,9 +84,7 @@ const toLogin = () => {
       </div>
 
       <!-- Footer -->
-      <div class="fixed bottom-4 right-4">
-        <p class="text-xs">Made with Shit</p>
-      </div>
+      
     </div>
   </div>
 </template>

@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeUnmount, nextTick } from "vue";
 import Artalk from "artalk";
 import "../assets/artalk.css";
+import { useRouter } from 'vue-router';
 
 const activeProject = ref(null);
 const emit = defineEmits(["project-active"]);
@@ -83,11 +84,12 @@ const projects = [
   {
     id: "03",
     color: "#D7CCC8",
-    title: "教育改革中的地域公平问题",
-    detailTitle: "高考改革引发争议：综合素质评价将纳入录取标准",
+    title: "Employment and Urban Development",
+    detailTitle: "996 Work Culture: A Regional Divide?",
     description:
-      "探讨教育改革背景下的地域差异问题，以及如何确保教育资源的公平分配。",
+      "Recent job hunt observation: Tier-1 cities promote 'wolf culture' (996), while Tier-2 cities maintain work-life balance with comparable salaries. Is this intensity really necessary for development?",
     tags: ["EDUCATION", "EQUALITY", "REFORM"],
+    image: "img2"
   },
   {
     id: "04",
@@ -252,37 +254,31 @@ const navigateProject = async (direction) => {
   }
 };
 
-// 修改 Artalk 实例管理部分
+// Artalk instance management
 const artalkInstances = ref<{ [key: string]: Artalk }>({});
 
-// 添加一个专门的方法来处理 Artalk 实例
+// Handle Artalk instance creation and management
 const handleArtalkInstance = async (projectId: string, title: string) => {
-  // 先毁所有现有实例
   Object.values(artalkInstances.value).forEach((instance) => {
     instance.destroy();
   });
   artalkInstances.value = {};
 
-  // 等待 DOM 更新
   await nextTick();
 
-  // 获取新的评论容器元素
   const commentEl = document.getElementById(`comments-${projectId}`);
   if (!commentEl) return;
 
-  // 创建新实例
   artalkInstances.value[projectId] = new Artalk({
     el: commentEl,
     pageKey: `project-${projectId}`,
     pageTitle: title,
-    server: "http://localhost:23366",
+    server: "http://localhost:23366", 
     site: "h.t.t.p.",
     placeholder: "分享你的想法...",
-    // 添加更多配置以确保评论正确加载
-    requestTimeout: 15000,
+    reqTimeout: 15000,
     useBackendConf: true,
 
-    // 添加错误处理
     onError: (err) => {
       console.error("Artalk error:", err);
     },
@@ -296,6 +292,12 @@ onBeforeUnmount(() => {
   });
   artalkInstances.value = {};
 });
+
+const router = useRouter();
+
+const goToMessageBoard = () => {
+  router.push({ name: 'Msg' });
+};
 </script>
 
 <template>
@@ -342,6 +344,16 @@ onBeforeUnmount(() => {
                 {{ discipline }}
               </li>
             </ul>
+          </div>
+
+          <!-- 第八列，添加按钮 -->
+          <div class="col-span-5 flex justify-end items-end">
+            <button
+              @click="goToMessageBoard"
+              class="font-black text-black/70 text-[clamp(0.75rem,1vw,0.875rem)] hover:text-black transition-colors"
+            >
+              前往留言板 →
+            </button>
           </div>
         </div>
       </div>
@@ -400,11 +412,11 @@ onBeforeUnmount(() => {
 
       <Transition
         enter-active-class="transition-all duration-500 ease-out"
-        enter-from-class="opacity-0 translate-y-full"
-        enter-to-class="opacity-100 translate-y-0"
+        enter-from-class="opacity-0 translate-x-full" 
+        enter-to-class="opacity-100 translate-x-0"
         leave-active-class="transition-all duration-300 ease-in"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 translate-y-full"
+        leave-from-class="opacity-100 translate-x-0"
+        leave-to-class="opacity-0 translate-x-full"
       >
         <div
           v-if="activeProject"
@@ -597,37 +609,7 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-/* 添加新的样式 */
-.text-[10vw] {
-  font-size: 10vw;
-}
 
-.text-[5vw] {
-  font-size: 5vw;
-}
-
-/* 修改全局过渡效果，排除特定元素 */
-*:not(.flex-none *, h1, .text-[10vw], .text-[5vw], .text-xs, .text-sm) {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 移除头部标题的动画 */
-.flex-none h1,
-.flex-none h2,
-.flex-none h3,
-.flex-none p,
-.flex-none li {
-  transition: none;
-  transform: none;
-}
-
-.flex-none h1:hover,
-.flex-none h2:hover,
-.flex-none h3:hover,
-.flex-none p:hover,
-.flex-none li:hover {
-  transform: none;
-}
 
 /* 移除项目详情卡片标题的悬浮效果 */
 .fixed h3,
